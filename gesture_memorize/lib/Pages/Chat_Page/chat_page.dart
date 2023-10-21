@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' as rootBundle;
 import 'dart:convert';
 import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Infomations/chat_info.dart';
-
+import 'package:gesture_memorize/global.dart';
 
 class ChatboxPage extends StatefulWidget {
   const ChatboxPage({
@@ -22,13 +22,13 @@ class ChatboxPage extends StatefulWidget {
 }
 
 class _ChatboxPageState extends State<ChatboxPage> {
-  // String groupid = "ee4412";
   final TextEditingController _messagecontroller = TextEditingController();
   late String _typeMessage;
   List _allchat = [];
 
   Future<void> readJson() async {
-    final String response = await rootBundle.rootBundle.loadString('assets/chat.json');
+    final String response =
+        await rootBundle.rootBundle.loadString('assets/chat.json');
     final data = await json.decode(response);
     setState(() {
       _allchat = data['allchat'];
@@ -51,7 +51,41 @@ class _ChatboxPageState extends State<ChatboxPage> {
     });
     print(selectedChats);
     print(chatgptChats);
+    reload() {
+      setState(() {});
+    }
 
+    onArrowBackPressed() {
+      if (recording) {
+        num difference = calculateTimeDifference();
+        currentGestures.gestures.last["actions"].add({
+          "name": "ArrowBack",
+          "time": difference,
+        });
+        actions.add({
+          "name": "ArrowBack",
+          "time": difference,
+        });
+      } else if (playing) {
+        actions.removeAt(0);
+      }
+      Navigator.pop(context);
+    }
+
+    if (playing && actions.isEmpty) {
+      playing = false;
+      reload();
+    } else if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
+        if (actions[0]["name"] == "ReturnHome") {
+          onReturnHomePressed(context);
+        }
+        //NOTE - add any gestures here if needed
+        if (actions[0]["name"] == "ArrowBack") {
+          onArrowBackPressed();
+        }
+      });
+    }
     return Scaffold(
       backgroundColor: const Color(0xff1B202D),
       body: SafeArea(
@@ -69,7 +103,8 @@ class _ChatboxPageState extends State<ChatboxPage> {
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        onArrowBackPressed();
+                        // Navigator.pop(context);
                       },
                     ),
                     CircleAvatar(
@@ -142,7 +177,9 @@ class _ChatboxPageState extends State<ChatboxPage> {
                     child: Padding(
                       padding: EdgeInsets.all(10.0),
                       child: SmallText(
-                        text: (chatgptChats.isNotEmpty)?chatgptChats[0]["content"]: "Hi",
+                        text: (chatgptChats.isNotEmpty)
+                            ? chatgptChats[0]["content"]
+                            : "Hi",
                         fontColor: Colors.white,
                         maxlines: 100,
                       ),
@@ -161,58 +198,59 @@ class _ChatboxPageState extends State<ChatboxPage> {
                         color: Color(0xff3D4354)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                      SizedBox(width: screenWidth / 10),
-                      Expanded(
-                        flex: 8,
-                        // width: screenWidth * 0.65,
-                        // height: screenHeight / 12,
-                        child: TextFormField(
-                          controller: _messagecontroller,
-                          onChanged: (value) {
-                            _typeMessage = value;
-                          },
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          style: TextStyle(color: Colors.white),
-                          textAlignVertical: TextAlignVertical.center,
-                          decoration: const InputDecoration.collapsed(
-                              filled: true,
-                              fillColor: Color(0xff3D4354),
-                              hintText: 'Message...',
-                              hintStyle: TextStyle(color: Colors.white)),
-                          // focusNode: _focusNode,
-                        ),
-                      ),
-                      SizedBox(width: screenWidth / 55),
-                      // IconButton(onPressed: () {}, icon: const Icon(Icons.camera)),
-                      // IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
-                      // Spacer(),
-                      Expanded(
-                        flex:2,
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: screenHeight/7),
-                          child: SizedBox(
-                              height: 10,
-                              width: 10,
-                              child: IconButton(
-                                icon: const Icon(Icons.send),
-                                onPressed: () {
-                                  ChatInfo.allchat.add({
-                                    "sender": name,
-                                    "content": _typeMessage,
-                                  });
-                                  setState(() {});
-                                  _messagecontroller.clear();
-                                },
-                                color: Colors.white54,
+                        children: [
+                          SizedBox(width: screenWidth / 10),
+                          Expanded(
+                            flex: 8,
+                            // width: screenWidth * 0.65,
+                            // height: screenHeight / 12,
+                            child: TextFormField(
+                              controller: _messagecontroller,
+                              onChanged: (value) {
+                                _typeMessage = value;
+                              },
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              style: TextStyle(color: Colors.white),
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: const InputDecoration.collapsed(
+                                  filled: true,
+                                  fillColor: Color(0xff3D4354),
+                                  hintText: 'Message...',
+                                  hintStyle: TextStyle(color: Colors.white)),
+                              // focusNode: _focusNode,
+                            ),
+                          ),
+                          SizedBox(width: screenWidth / 55),
+                          // IconButton(onPressed: () {}, icon: const Icon(Icons.camera)),
+                          // IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
+                          // Spacer(),
+                          Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(bottom: screenHeight / 7),
+                              child: SizedBox(
+                                height: 10,
+                                width: 10,
+                                child: IconButton(
+                                  icon: const Icon(Icons.send),
+                                  onPressed: () {
+                                    ChatInfo.allchat.add({
+                                      "sender": name,
+                                      "content": _typeMessage,
+                                    });
+                                    setState(() {});
+                                    _messagecontroller.clear();
+                                  },
+                                  color: Colors.white54,
+                                ),
                               ),
                             ),
-                        ),
-                        ),
-                      
-                      SizedBox(width: screenWidth / 45),
-                    ]),
+                          ),
+
+                          SizedBox(width: screenWidth / 45),
+                        ]),
                   ),
                 ),
               ],
