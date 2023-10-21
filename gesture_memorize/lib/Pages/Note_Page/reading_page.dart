@@ -37,7 +37,6 @@ class _ReadingPageState extends State<ReadingPage> {
 
   onArrowBackPressed() {
     if (recording) {
-      print("arrowback");
       num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
@@ -48,11 +47,7 @@ class _ReadingPageState extends State<ReadingPage> {
         "time": difference,
       });
     } else if (playing) {
-      print("reading page before remove");
-      print(actions);
       actions.removeAt(0);
-      print("reading page after remove");
-      print(actions);
       // print(actions);
     }
     Navigator.pop(context);
@@ -66,13 +61,17 @@ class _ReadingPageState extends State<ReadingPage> {
       reload();
     } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          widget.reload();
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        }
-        //NOTE - add any gestures here if needed
-        if (actions[0]["name"] == "ArrowBack") {
+        } if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
+        //NOTE - add any gestures here if needed
+        
       });
     }
 

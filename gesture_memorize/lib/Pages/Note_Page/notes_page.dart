@@ -36,6 +36,7 @@ class _NotesPageState extends State<NotesPage> {
     } else if (playing) {
       actions.removeAt(0);
     }
+    reload();
     Navigator.pop(context);
   }
 
@@ -56,7 +57,6 @@ class _NotesPageState extends State<NotesPage> {
     Navigator.push(context,
             MaterialPageRoute(builder: ((context) => const EditingPage())))
         .then((_) {
-      print("reload");
       reload();
     });
   }
@@ -65,10 +65,16 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     if (playing && actions.isEmpty) {
       playing = false;
+      actions = [];
       reload();
     } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        //NOTE - add any gestures here if needed
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          reload();
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         } else if (actions[0]["name"] == "ArrowBack") {
           Navigator.pop(context);
@@ -139,7 +145,6 @@ class _NotesPageState extends State<NotesPage> {
                           mainAxisSpacing: 2.0,
                         ),
                         children: notes.map((note) {
-                          print(note);
                           return NotesCard(
                             title: note['title'],
                             description: note['docs'],

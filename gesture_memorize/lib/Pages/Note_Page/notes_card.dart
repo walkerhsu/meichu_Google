@@ -59,13 +59,17 @@ class _NotesCardState extends State<NotesCard> {
       widget.reload();
     } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          widget.reload();
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        }
-        //NOTE - add any gestures here if needed
-        else if (actions[0]["name"] == "ToCard") {
+        } else if (actions[0]["name"] == "ToCard") {
           onCardPressed(actions[0]["title"], actions[0]["contents"]);
         }
+        //NOTE - add any gestures here if needed
+        
       });
     }
     return InkWell(

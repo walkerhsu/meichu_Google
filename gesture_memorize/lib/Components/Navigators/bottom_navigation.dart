@@ -19,8 +19,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
   List<Map<String, dynamic>> filteredGestures = [];
   processGestures() {
     filteredGestures = [];
+    print(currentGestures.gestures);
     for (int i = 0; i < currentGestures.gestures.length; i++) {
       if (currentGestures.gestures[i]["root"] == widget.root) {
+        print(currentGestures.gestures[i]);
         filteredGestures.add(currentGestures.gestures[i]);
       }
     }
@@ -30,9 +32,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   }
 
   onRecordPressed() {
-
     currentGestures.gestures.add({
-      "lastActionTime": DateTime.now().millisecondsSinceEpoch, 
+      "lastActionTime": DateTime.now().millisecondsSinceEpoch,
       "root": widget.root,
       "gesturesName": "",
       "actions": [],
@@ -98,7 +99,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             return AlertDialog(
               title: const Text('Action Lists'),
               content: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height * 0.3,
                 child: Expanded(
                   child: Column(
                     children: [
@@ -108,7 +109,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                         TextButton(
                           child: Text(filteredGestures[index]["gesturesName"]),
                           onPressed: () {
-                            actions = filteredGestures[index]['actions'];
+                            actions = List.from(filteredGestures[index]['actions']);
                             playing = true;
                             Navigator.pop(context);
                             widget.reload();
