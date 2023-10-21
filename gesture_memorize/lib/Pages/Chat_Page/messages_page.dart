@@ -40,17 +40,16 @@ class _MessagesPageState extends State<MessagesPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     // print(MediaQuery.of(context).size.height);
     // print(MediaQuery.of(context).size.width);
-    if(playing && actions.isEmpty) {
+    if (playing && actions.isEmpty) {
       playing = false;
       reload();
-    }
-    else if (playing && actions.isNotEmpty) {
+    } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
-        if(actions[0]["name"] == "ArrowBack") {
+        if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
       });
@@ -58,7 +57,7 @@ class _MessagesPageState extends State<MessagesPage> {
     return Scaffold(
       backgroundColor: Color(0xff1B202D),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,17 +139,17 @@ class _MessagesPageState extends State<MessagesPage> {
               SizedBox(
                 height: screenHeight / 35.7,
               ),
-              SingleChildScrollView(
-                child: Container(
-                  height: screenHeight / 1.65,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                      color: Color(0xff292F3F),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50),
-                      )),
-                  child: Expanded(
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    height: screenHeight / 1.5,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                        color: Color(0xff292F3F),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(50),
+                          topRight: Radius.circular(50),
+                        )),
                     child: ListView(
                       children: [
                         for (int i = 0; i < MessageListInfo.people.length; i++)
@@ -232,7 +231,8 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
         ),
       ),
-      bottomNavigationBar:  BottomNavigation(reload: reload, root: "MessagesPage"),
+      bottomNavigationBar:
+          BottomNavigation(reload: reload, root: "MessagesPage"),
     );
   }
 }
