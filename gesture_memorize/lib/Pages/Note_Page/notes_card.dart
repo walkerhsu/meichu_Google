@@ -27,10 +27,14 @@ class _NotesCardState extends State<NotesCard> {
       currentGestures.gestures.last["actions"].add({
         "name": "ToCard",
         "time": difference,
+        "title": widget.title,
+        "contents": widget.description,
       });
       actions.add({
         "name": "ToCard",
         "time": difference,
+        "title": widget.title,
+        "contents": widget.description,
       });
     } else if (playing) {
       actions.removeAt(0);
@@ -60,7 +64,7 @@ class _NotesCardState extends State<NotesCard> {
         }
         //NOTE - add any gestures here if needed
         else if (actions[0]["name"] == "ToCard") {
-          onCardPressed(widget.title, widget.description);
+          onCardPressed(actions[0]["title"], actions[0]["contents"]);
         }
       });
     }

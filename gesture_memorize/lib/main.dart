@@ -6,7 +6,7 @@ import 'package:gesture_memorize/Pages/home_page.dart';
 import 'package:gesture_memorize/firebase_options.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/Gestures/gestures.dart';
-import 'package:gesture_memorize/Pages/game.dart';
+import 'package:gesture_memorize/Pages/Game_Page/game.dart';
 import 'package:intl/intl.dart';
 
 Future<void> main() async {

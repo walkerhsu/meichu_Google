@@ -20,18 +20,19 @@ class _MessagesPageState extends State<MessagesPage> {
 
   onArrowBackPressed() {
     if (recording) {
+      num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
       actions.removeAt(0);
     }
-    Navigator.pushNamed(context, '/homePage');
+    Navigator.pop(context);
   }
 
   @override
@@ -139,90 +140,95 @@ class _MessagesPageState extends State<MessagesPage> {
               SizedBox(
                 height: screenHeight / 35.7,
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    height: screenHeight / 1.5,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        color: Color(0xff292F3F),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50),
-                          topRight: Radius.circular(50),
-                        )),
-                    child: ListView(
-                      children: [
-                        for (int i = 0; i < MessageListInfo.people.length; i++)
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChatboxPage(
-                                            name: MessageListInfo.people[i]
-                                                ["name"],
-                                            image: MessageListInfo.people[i]
-                                                ["image"],
-                                          )));
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: screenWidth / 13.85,
-                                  top: screenHeight / 35.7,
-                                  right: screenWidth / 36),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: Image.asset(
-                                            MessageListInfo.people[i]["image"])
-                                        .image,
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth / 36,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: screenWidth / 3,
-                                            child: Text(
-                                              MessageListInfo.people[i]["name"],
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: ('Quicksand'),
-                                                  fontSize: 17),
-                                            ),
-                                          ),
-                                          SizedBox(width: screenWidth / 6
-                                              // width: 100,
+              SingleChildScrollView(
+                child: Container(
+                  height: screenHeight / 1.98,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                      color: Color(0xff292F3F),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                      )),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: screenHeight / 65,
+                      bottom: screenWidth / 50),
+                    child: Expanded(
+                      child: ListView(
+                        children: [
+                          for (int i = 0; i < MessageListInfo.people.length; i++)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatboxPage(
+                                              name: MessageListInfo.people[i]
+                                                  ["name"],
+                                              image: MessageListInfo.people[i]
+                                                  ["image"],
+                                            )));
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: screenWidth / 13.85,
+                                    top: screenHeight / 35.7,
+                                    right: screenWidth / 36),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: Image.asset(
+                                              MessageListInfo.people[i]["image"])
+                                          .image,
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth / 36,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: screenWidth / 3,
+                                              child: Text(
+                                                MessageListInfo.people[i]["name"],
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: ('Quicksand'),
+                                                    fontSize: 17),
                                               ),
-                                          Text(
-                                            MessageListInfo.people[i]["date"],
-                                            style: const TextStyle(
-                                                color: Colors.white70),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: screenHeight / 143.2,
-                                      ),
-                                      Text(
-                                        MessageListInfo.people[i]["gmail"],
-                                        style: const TextStyle(
-                                          color: Colors.white70,
+                                            ),
+                                            SizedBox(width: screenWidth / 6
+                                                // width: 100,
+                                                ),
+                                            Text(
+                                              MessageListInfo.people[i]["date"],
+                                              style: const TextStyle(
+                                                  color: Colors.white70),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        SizedBox(
+                                          height: screenHeight / 143.2,
+                                        ),
+                                        Text(
+                                          MessageListInfo.people[i]["gmail"],
+                                          style: const TextStyle(
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                      ],
+                            )
+                        ],
+                      ),
                     ),
                   ),
                 ),
