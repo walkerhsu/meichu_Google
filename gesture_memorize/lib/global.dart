@@ -9,7 +9,9 @@ bool playing = false;
 String initTime = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
 String lastclaimtime =
     DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString();
-int rewardInval = 10;
+
+int count = 0;
+int rewardInval = 90;
 
 onReturnHomePressed(context) {
   if (recording) {
