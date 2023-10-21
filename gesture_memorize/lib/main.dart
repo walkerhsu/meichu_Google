@@ -7,6 +7,7 @@ import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/Gestures/gestures.dart';
 import 'package:gesture_memorize/Pages/home_page.dart';
 import 'package:gesture_memorize/Pages/game.dart';
+import 'package:intl/intl.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +16,7 @@ Future<void> main() async {
   );
   currentGestures = Gestures(userName: "test");
   // await CloudStorage.uploadGestureData("test");
-
+  initTime = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
   runApp(const MyApp());
 }
 

@@ -13,9 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static String time = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
   int _count = 0;
-
   reload() {
     setState(() {});
   }
@@ -77,10 +75,18 @@ class _HomePageState extends State<HomePage> {
           IconButton(
               onPressed: () =>
                   Navigator.pushNamed(context, GamePage.routeName, arguments: {
-                    "time": time,
                     "count": _count,
                     "addCount": () {
                       _count += 1;
+                    },
+                    "rewardCount": () {
+                      _count += 50;
+                    },
+                    "lastClaimTime": lastclaimtime,
+                    "updateClaimTime": () {
+                      lastclaimtime = DateFormat("yyyy-MM-dd HH:mm:ss")
+                          .format(DateTime.now())
+                          .toString();
                     }
                   }),
               icon: const Icon(Icons.games_rounded)),
