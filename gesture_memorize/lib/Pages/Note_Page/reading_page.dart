@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gesture_memorize/Components/Text/big_text.dart';
-import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/global.dart';
@@ -18,15 +16,16 @@ class _ReadingPageState extends State<ReadingPage> {
   final TextEditingController _titlecontroller = TextEditingController();
   final TextEditingController _contentcontroller = TextEditingController();
 
+
+  reload() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     _titlecontroller.text = widget.title;
     _contentcontroller.text = widget.contents;
-  }
-
-  reload() {
-    setState(() {});
   }
 
   onArrowBackPressed() {

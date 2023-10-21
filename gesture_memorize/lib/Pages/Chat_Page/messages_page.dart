@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
-import 'package:gesture_memorize/Components/chatbox_messages.dart';
 import 'package:gesture_memorize/Infomations/message_list_info.dart';
 import 'package:gesture_memorize/Pages/Chat_Page/chat_page.dart';
 import 'package:gesture_memorize/global.dart';

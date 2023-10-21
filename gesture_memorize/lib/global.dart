@@ -19,11 +19,14 @@ onReturnHomePressed(context) {
     });
   } else if (playing) {
     actions.removeAt(0);
+  } else {
+    playing = false;
+    recording = false;
   }
-  Navigator.pushNamedAndRemoveUntil(context, '/homePage', (r)=>false);
+  Navigator.pushNamedAndRemoveUntil(context, '/homePage', (r) => false);
 }
 
-num calculateTimeDifference () {
+num calculateTimeDifference() {
   num currentTime = DateTime.now().millisecondsSinceEpoch;
   num difference =
       currentTime - currentGestures.gestures.last['lastActionTime'];

@@ -1,88 +1,134 @@
 import 'package:flutter/material.dart';
-import 'package:gesture_memorize/Components/Buttons/pushable_button.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
+import 'package:gesture_memorize/Pages/game.dart';
+import 'package:gesture_memorize/global.dart';
+import 'package:intl/intl.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  final String title;
-  static const String id = '/homepage';
+  static String routeName = '/homePage';
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
+  static String time = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
+  int _count = 0;
+
+  reload() {
+    setState(() {});
+  }
+
+  onNotesPagePressed() {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "NotesPage",
+        "time": difference,
+      });
+      actions.add({
+        "name": "NotesPage",
+        "time": difference,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.of(context).pushNamed('/NotesPage');
+  }
+
+  onMessagesPagePressed() {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "MessagesPage",
+        "time": difference,
+      });
+      actions.add({
+        "name": "MessagesPage",
+        "time": difference,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.of(context).pushNamed('/MessagesPage');
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
+        if (actions[0]["name"] == "ReturnHome") {
+          onReturnHomePressed(context);
+        } else if (actions[0]["name"] == "NotesPage") {
+          onNotesPagePressed();
+        } else if (actions[0]["name"] == "MessagesPage") {
+          onMessagesPagePressed();
+        }
+        //NOTE - add any gestures here if needed
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("HomePage"),
         actions: <Widget>[
           IconButton(
-              onPressed: () => Navigator.pushNamed(context, '/chatbox'),
-              icon: const Icon(Icons.message)),
-          const SizedBox(width: 8),
+              onPressed: () =>
+                  Navigator.pushNamed(context, GamePage.routeName, arguments: {
+                    "time": time,
+                    "count": _count,
+                    "addCount": () {
+                      _count += 1;
+                    }
+                  }),
+              icon: const Icon(Icons.games_rounded)),
+          const SizedBox(width: 16),
         ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logo.png',
-              width: MediaQuery.of(context).size.width * 0.7,
+          children: <Widget>[
+            InkWell(
+              onTap: () {
+                onNotesPagePressed();
+              },
+              child: Image.asset(
+                'assets/images/notebook.png',
+                width: 100,
+                height: 100,
+              )
             ),
-            const SizedBox(height: 20),
-            PushableButton(
-              height: 60,
-              elevation: 8,
-              hslColor: const HSLColor.fromAHSL(1.0, 229, 1, 0.5),
-              shadow: BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 2),
-              ),
-              onPressed: () => Navigator.pushNamed(context, '/create'),
-              textChild: const Text('CREATE ROOM',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  )),
-              iconChild: const Icon(
-                Icons.create,
-                color: Colors.white,
-                size: 36,
-              ),
+            const SizedBox(height: 100),
+            InkWell(
+              onTap: () {
+                onMessagesPagePressed();
+              },
+              child: Image.asset(
+                'assets/images/instagram.png',
+                width: 100,
+                height: 100,
+              )
             ),
-            const SizedBox(height: 20),
-            PushableButton(
-              height: 60,
-              elevation: 8,
-              hslColor: const HSLColor.fromAHSL(1.0, 356, 1.0, 0.43),
-              shadow: BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 2),
-              ),
-              onPressed: () => Navigator.pushNamed(context, '/join'),
-              textChild: const Text('JOIN ROOM',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  )),
-              iconChild: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 36,
-              ),
-            ),
+            const SizedBox(height: 100),
+            InkWell(
+              onTap: () {
+                onMessagesPagePressed();
+              },
+              child: Image.asset(
+                'assets/images/game-console.png',
+                width: 100,
+                height: 100,
+              )
+            )
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigation(reload: reload, root: "/homePage"),
     );
   }
 }
+
+// 
