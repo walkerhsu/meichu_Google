@@ -160,14 +160,14 @@ class _NotesPageState extends State<NotesPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           onAddNewNotePressed();
           // Navigator.push(context,
           //     MaterialPageRoute(builder: ((context) => EditingPage())));
         },
-        label: const Text('Add'),
-        icon: const Icon(Icons.add),
+        child: const Icon(Icons.edit),
+        backgroundColor: AppColor.almond,
       ),
       bottomNavigationBar: BottomNavigation(reload: reload, root: "NotesPage"),
     );

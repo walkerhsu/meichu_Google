@@ -27,14 +27,18 @@ class _ChatboxPageState extends State<ChatboxPage> {
   Future<List<dynamic>> filteredReadData() async {
     List<Map<String, dynamic>> data = await ChatInfo.readData("chat.json");
     final filteredChats = [];
-    final receivedChats = [];
+    // final receivedChats = [];
 
     data.forEach((chat) {
-      if (chat["receiver"] == widget.name && chat["sender"] == "me")
+      if (chat["receiver"] == widget.name && chat["sender"] == "me" ||(chat["receiver"] == "me") ){
         filteredChats.add(chat);
-      if (chat["receiver"] == "me") receivedChats.add(chat);
+      }
     });
-    return [filteredChats, receivedChats];
+    // print("filterChat: ");
+    // print(filteredChats);
+    // print("receivedChats: ");
+    // print(receivedChats);
+    return filteredChats;
   }
 
   onSendMessagePressed() async {
@@ -186,17 +190,16 @@ class _ChatboxPageState extends State<ChatboxPage> {
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       }
-                      final filteredchats = snapshot.data![0];
                       return Expanded(
                         child: SingleChildScrollView(
                           child: SizedBox(
                             width: screenWidth,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
-                              children: filteredchats
-                                  .map<Widget>((chat) => Padding(
+                              children: snapshot.data!
+                                  .map((chat) => Padding(
                                         padding: EdgeInsets.only(
-                                            right: screenWidth / 50,
+                                            right: (chat["receiver"] == "me")?(screenWidth * 0.5):(screenWidth / 50),
                                             bottom: screenHeight / 71.4),
                                         child: Container(
                                             decoration: BoxDecoration(
@@ -204,8 +207,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                                                     BorderRadius.circular(20),
                                                 color: const Color(0xff373E4E)),
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
+                                              padding: const EdgeInsets.all(10.0),
                                               child: SmallText(
                                                 text: chat["content"],
                                                 fontColor: Colors.white,
@@ -219,46 +221,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                         ),
                       );
                     }),
-                // SizedBox(
-                //   height: screenHeight / 71.4,
-                // ),
-                FutureBuilder(
-                    future: filteredReadData(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState != ConnectionState.done) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      final receivedChats = snapshot.data![1];
-                      // print("received");
-                      // print(receivedChats);
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: receivedChats
-                            .map<Widget>((chat) => Padding(
-                                  padding: EdgeInsets.only(
-                                      right: screenWidth / 20,
-                                      bottom: screenHeight / 71.4),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          color: const Color(0xff373E4E)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: SmallText(
-                                          text: chat["content"],
-                                          fontColor: Colors.white,
-                                          maxlines: 100,
-                                        ),
-                                      )),
-                                ))
-                            .toList(),
-                      );
-                    }),
-
+                
                 // const Spacer(),
                 Container(
                   padding: EdgeInsets.only(bottom: screenWidth / 45),
@@ -285,7 +248,8 @@ class _ChatboxPageState extends State<ChatboxPage> {
                               },
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
-                              style: const TextStyle(color: Colors.white),
+                              autofocus: true,
+                              style: TextStyle(color: Colors.white),
                               textAlignVertical: TextAlignVertical.center,
                               decoration: const InputDecoration.collapsed(
                                 filled: true,
