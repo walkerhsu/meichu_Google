@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gesture_memorize/Components/bottom_navigation.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:gesture_memorize/global.dart';
 
@@ -119,7 +119,8 @@ class _GamePageState extends State<GamePage> {
         },
         icon: const Icon(Icons.add),
       ),
-      bottomNavigationBar: BottomNavigation(reload: () => setState(() {})),
+      bottomNavigationBar:
+          BottomNavigation(reload: () => setState(() {}), root: 'game'),
     );
   }
 }
