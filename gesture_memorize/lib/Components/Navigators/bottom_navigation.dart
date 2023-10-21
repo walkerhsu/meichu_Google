@@ -19,15 +19,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
   List<Map<String, dynamic>> filteredGestures = [];
   processGestures() {
     filteredGestures = [];
-    print(currentGestures.gestures);
     for (int i = 0; i < currentGestures.gestures.length; i++) {
       if (currentGestures.gestures[i]["root"] == widget.root) {
-        print(currentGestures.gestures[i]);
         filteredGestures.add(currentGestures.gestures[i]);
       }
     }
-    print("processGestures");
-    print(filteredGestures);
     return;
   }
 
