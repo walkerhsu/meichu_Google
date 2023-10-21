@@ -18,26 +18,8 @@ class _MessagesPageState extends State<MessagesPage> {
     setState(() {});
   }
 
-  onArrowBackPressed() {
-    if (recording) {
-      num difference = calculateTimeDifference();
-      currentGestures.gestures.last["actions"].add({
-        "name": "ArrowBack",
-        "time": difference,
-      });
-      actions.add({
-        "name": "ArrowBack",
-        "time": difference,
-      });
-    } else if (playing) {
-      actions.removeAt(0);
-    }
-    Navigator.pop(context);
-  }
-
   onMessagePressed(Map<String, dynamic> person) {
     if (recording) {
-      print("in recording");
       num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "Message",
@@ -69,8 +51,6 @@ class _MessagesPageState extends State<MessagesPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     final users = {...MessageListInfo.people, ...MessageListInfo.recentpeople};
-    // print(MediaQuery.of(context).size.height);
-    // print(MediaQuery.of(context).size.width);
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
@@ -82,8 +62,6 @@ class _MessagesPageState extends State<MessagesPage> {
           reload();
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        } else if (actions[0]["name"] == "ArrowBack") {
-          onArrowBackPressed();
         } else if (actions[0]["name"] == "Message") {
           onMessagePressed(actions[0]["person"]);
         }
@@ -111,17 +89,6 @@ class _MessagesPageState extends State<MessagesPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  IconButton(
-                    iconSize: 20,
-                    icon: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      onArrowBackPressed();
-                      // Navigator.pop(context);
-                    },
-                  ),
                   const Text(
                     'Messages',
                     style: TextStyle(
