@@ -4,43 +4,129 @@ import 'package:gesture_memorize/global.dart';
 
 class BottomNavigation extends StatefulWidget {
   final dynamic reload;
+  final String root;
   const BottomNavigation({
     super.key,
     required this.reload,
+    required this.root,
   });
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
+  TextEditingController textFieldController = TextEditingController();
+  List<Map<String, dynamic>> filteredGestures = [];
+  processGestures() {
+    filteredGestures = [];
+    for (int i = 0; i < currentGestures.gestures.length; i++) {
+      if (currentGestures.gestures[i]["root"] == widget.root) {
+        filteredGestures.add(currentGestures.gestures[i]);
+      }
+    }
+    print("processGestures");
+    print(filteredGestures);
+    return;
+  }
+
   onRecordPressed() {
-    gestures.gestures.add([]);
+
+    currentGestures.gestures.add({
+      "lastActionTime": DateTime.now().millisecondsSinceEpoch, 
+      "root": widget.root,
+      "gesturesName": "",
+      "actions": [],
+    });
     recording = true;
     widget.reload();
   }
 
   onStopRecordingPressed() {
     recording = false;
-    // setState(() {});
+    showDialog(
+        context: context,
+        builder: ((context) {
+          return AlertDialog(
+            title: const Text('TextField in Dialog'),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  textFieldController.text = value;
+                });
+              },
+              controller: textFieldController,
+              decoration:
+                  const InputDecoration(hintText: "Text Field in Dialog"),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  currentGestures.gestures.last["gesturesName"] =
+                      textFieldController.text;
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        }));
     widget.reload();
   }
 
   onPlayPressed() {
-    if (gestures.gestures.isEmpty) {
+    if (currentGestures.gestures.isEmpty) {
       showAlert(
         context: context,
-        title: 'Can''t play actions',
+        title: 'Can' 't play actions',
         desc: 'Record actions first',
         onPressed: () {
           Navigator.pop(context);
         },
       ).show();
       return;
+    } else {
+      processGestures();
+      showDialog(
+          context: context,
+          builder: ((context) {
+            return AlertDialog(
+              title: const Text('Action Lists'),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Column(
+                  children: [
+                    for (int index = 0;
+                        index < filteredGestures.length;
+                        index++)
+                      TextButton(
+                        child: Text(filteredGestures[index]["gesturesName"]),
+                        onPressed: () {
+                          actions = filteredGestures[index]['actions'];
+                          playing = true;
+                          Navigator.pop(context);
+                          widget.reload();
+                        },
+                      )
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          }));
     }
-    actions = gestures.gestures.last;
-    playing = true;
-    // setState(() {});
-    widget.reload();
   }
 
   onStopPressed() {
@@ -81,7 +167,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             ),
           ),
           const SizedBox(width: 50),
-          playing
+          playing && actions.isNotEmpty
               ? IconButton(
                   onPressed: onStopPressed,
                   icon: const Icon(

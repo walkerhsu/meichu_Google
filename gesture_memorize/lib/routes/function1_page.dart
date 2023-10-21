@@ -12,20 +12,19 @@ class Function1Page extends StatefulWidget {
 
 class _Function1PageState extends State<Function1Page> {
   reload() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   onArrowBackPressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last['actions'].add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
       actions.removeAt(0);
@@ -36,7 +35,7 @@ class _Function1PageState extends State<Function1Page> {
   @override
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
@@ -52,7 +51,8 @@ class _Function1PageState extends State<Function1Page> {
           ],
         ),
       ),
-      bottomNavigationBar:  BottomNavigation(reload: reload),
+      bottomNavigationBar:
+          BottomNavigation(reload: reload, root: "function1Page"),
     );
   }
 }

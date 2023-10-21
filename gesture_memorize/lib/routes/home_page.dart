@@ -22,13 +22,14 @@ class _HomePageState extends State<HomePage> {
 
   onFunction1Pressed() {
     if (recording) {
+      num difference = calculateTimeDifference();
       actions.add({
         "name": "function1",
-        "time": 3,
+        "time": difference,
       });
-      gestures.gestures.last.add({
+      currentGestures.gestures.last['actions'].add({
         "name": "function1",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
       actions.removeAt(0);
@@ -40,13 +41,14 @@ class _HomePageState extends State<HomePage> {
 
   onFunction2Pressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last['actions'].add({
         "name": "function2",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "function2",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
       actions.removeAt(0);
@@ -55,8 +57,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   onNotesPagePressed() {
+    
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last["actions"].add({
         "name": "NotesPage",
         "time": 3,
       });
@@ -73,7 +76,7 @@ class _HomePageState extends State<HomePage> {
 
   onMessagesPagePressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last["actions"].add({
         "name": "MessagesPage",
         "time": 3,
       });
@@ -153,7 +156,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(reload: reload),
+      bottomNavigationBar:  BottomNavigation(reload: reload, root: "homePage"),
     );
   }
 }

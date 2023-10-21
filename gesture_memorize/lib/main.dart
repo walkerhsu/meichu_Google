@@ -15,7 +15,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  gestures = Gestures(name: "test");
+  currentGestures = Gestures(userName: "test");
   // await CloudStorage.uploadGestureData("test");
 
   runApp(const MyApp());
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         HomePage.routeName: (context) => const HomePage(),
         Function1Page.routeName: (context) => const Function1Page(),
         Function2Page.routeName: (context) => const Function2Page(),
-        GamePage.routeName: (context) => GamePage(),
+        GamePage.routeName: (context) => const GamePage(),
         NotesPage.routeName: (context) => const NotesPage(),
         MessagesPage.routeName: (context) => const MessagesPage(),
       },
