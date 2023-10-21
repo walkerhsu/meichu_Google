@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
+import 'package:gesture_memorize/Constants/screen.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:gesture_memorize/global.dart';
 
@@ -23,6 +25,7 @@ class _GamePageState extends State<GamePage> {
   bool isClaimed = false;
   Timer? timer;
   Timer? timer1;
+  bool _isClicked = false;
 
   @override
   void initState() {
@@ -96,17 +99,16 @@ class _GamePageState extends State<GamePage> {
       return _diff == 0 && _isSparkle ? const SizedBox(width: 0) : w;
     }
 
-    if(playing && actions.isEmpty) {
+    if (playing && actions.isEmpty) {
       playing = false;
       reload();
-    }
-    else if (playing && actions.isNotEmpty) {
+    } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
-        if(actions[0]["name"] == "ArrowBack") {
+        if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
       });
@@ -114,83 +116,110 @@ class _GamePageState extends State<GamePage> {
 
     return Scaffold(
       body: SafeArea(
-          child: Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                // color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            // color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          iconSize: 20,
-                          icon: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {
-                            onArrowBackPressed();
-                          },
-                        ),
-                        const SizedBox(width: 10),
-                        // Column(
-                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                        //   children: [
-                        const BigText(
-                          text: "Game Page",
-                          size: 20,
-                        ),
-                        // Text("Logged in at ${args['time']}")
-                        // ],
-                        // ),
-                        const SizedBox(width: 8),
-                        Spacer(),
-                        sparkling(Text(
-                            '${_diff ~/ 60}:${_diff % 60 >= 10 ? "" : 0}${_diff % 60}')),
-                        _diff == 0
-                            ? IconButton(
-                                onPressed: () {
-                                  updateClaimTime();
-                                  rewardCount();
-                                  setState(() {
-                                    _diff = 30;
-                                    _count += 50;
-                                    _localClaimRewardTime =
-                                        DateFormat("yyyy-MM-dd HH:mm:ss")
-                                            .format(DateTime.now())
-                                            .toString();
-                                    isClaimed = true;
-                                  });
-                                  showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          ClaimReward());
-                                },
-                                icon: const Icon(Icons.crisis_alert))
-                            : IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.calendar_month)),
-                        const SizedBox(width: 8)
-                      ],
+                    IconButton(
+                      iconSize: 20,
+                      icon: const Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        onArrowBackPressed();
+                      },
                     ),
-                    SizedBox(height: screenHeight / 3),
-                    Align(
-                        child: Text(
-                            "You have pushed the button ${_count + count} times.")),
-                  ]))),
-      floatingActionButton: IconButton.filledTonal(
-        onPressed: () {
-          setState(() {
-            _count += 1;
-          });
-          addCount();
-        },
-        icon: const Icon(Icons.add),
-      ),
+                    const SizedBox(width: 10),
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    const BigText(
+                      text: "Game Page",
+                      size: 20,
+                    ),
+                    // Text("Logged in at ${args['time']}")
+                    // ],
+                    // ),
+                    const SizedBox(width: 8),
+                    Spacer(),
+                    sparkling(Text(
+                        '${_diff ~/ 60}:${_diff % 60 >= 10 ? "" : 0}${_diff % 60}')),
+                    _diff == 0
+                        ? IconButton(
+                            onPressed: () {
+                              updateClaimTime();
+                              rewardCount();
+                              setState(() {
+                                _diff = 30;
+                                _count += 50;
+                                _localClaimRewardTime =
+                                    DateFormat("yyyy-MM-dd HH:mm:ss")
+                                        .format(DateTime.now())
+                                        .toString();
+                                isClaimed = true;
+                              });
+                              showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      ClaimReward());
+                            },
+                            icon: const Icon(Icons.crisis_alert))
+                        : IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.calendar_month)),
+                    const SizedBox(width: 8)
+                  ],
+                ),
+                // SizedBox(height: screenHeight / 3),
+                Expanded(
+                  child: InkWell(
+                    child: !_isClicked
+                        ? Image.asset(
+                            'assets/images/cookie-monster.jpg',
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'assets/images/cookie-monster-1.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                    onTapDown: (TapDownDetails tap) {
+                      setState(() {
+                        _count += 1;
+                        _isClicked = true;
+                      });
+                      addCount();
+                    },
+                    onTapUp: (TapUpDetails tap) {
+                      setState(() {
+                        _isClicked = false;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(child: Text('$_isClicked'), width: 0, height: 0),
+              ]),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 60),
+            Center(
+              child: Text("${count + _count}", style: TextStyle(fontSize: 80)),
+            )
+          ],
+        )
+      ])),
       bottomNavigationBar: BottomNavigation(reload: reload, root: "GamePage"),
     );
   }
