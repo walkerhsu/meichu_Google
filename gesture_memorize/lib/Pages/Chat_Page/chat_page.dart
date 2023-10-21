@@ -124,7 +124,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                   children: selectedChats
                       .map((chat) => Padding(
                             padding: EdgeInsets.only(
-                                left: screenWidth / 5.14,
+                                right: screenWidth / 20,
                                 bottom: screenHeight / 71.4),
                             child: Container(
                                 decoration: BoxDecoration(
@@ -151,7 +151,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                     child: Padding(
                       padding: EdgeInsets.all(10.0),
                       child: SmallText(
-                        text: chatgptChats[0]["content"],
+                        text: (chatgptChats.isNotEmpty)?chatgptChats[0]["content"]: "Hi",
                         fontColor: Colors.white,
                         maxlines: 100,
                       ),

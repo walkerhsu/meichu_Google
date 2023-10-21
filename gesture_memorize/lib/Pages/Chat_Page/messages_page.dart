@@ -2,17 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/chatbox_messages.dart';
 import 'package:gesture_memorize/Infomations/message_list_info.dart';
 import 'package:gesture_memorize/Pages/Chat_Page/chat_page.dart';
+import 'package:gesture_memorize/global.dart';
 
-class MessagesPage extends StatelessWidget {
+class MessagesPage extends StatefulWidget {
   const MessagesPage({Key? key}) : super(key: key);
   static const String id = '/messages';
+  static String routeName = '/MessagesPage';
+
+  @override
+  State<MessagesPage> createState() => _MessagesPageState();
+}
+
+class _MessagesPageState extends State<MessagesPage> {
+  reload() {
+    setState(() {});
+  }
+
+  onArrowBackPressed() {
+    if (recording) {
+      gestures.gestures.last.add({
+        "name": "ArrowBack",
+        "time": 3,
+      });
+      actions.add({
+        "name": "ArrowBack",
+        "time": 3,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.pushNamed(context, '/homePage');
+  }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    print(MediaQuery.of(context).size.height);
-    print(MediaQuery.of(context).size.width);
+    // print(MediaQuery.of(context).size.height);
+    // print(MediaQuery.of(context).size.width);
+    if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+        if (actions[0]["name"] == "ReturnHome") {
+          onReturnHomePressed(context);
+        }
+        //NOTE - add any gestures here if needed
+        if(actions[0]["name"] == "ArrowBack") {
+          onArrowBackPressed();
+        }
+      });
+    }
     return Scaffold(
       backgroundColor: Color(0xff1B202D),
       body: Padding(
@@ -22,8 +60,19 @@ class MessagesPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  IconButton(
+                    iconSize: 20,
+                    icon: const Icon(
+                      Icons.arrow_back_ios_rounded,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      onArrowBackPressed();
+                      // Navigator.pop(context);
+                    },
+                  ),
                   const Text(
                     'Messages',
                     style: TextStyle(
@@ -107,8 +156,10 @@ class MessagesPage extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ChatboxPage(
-                                            name: MessageListInfo.people[i]["name"],
-                                            image: MessageListInfo.people[i]["image"],
+                                            name: MessageListInfo.people[i]
+                                                ["name"],
+                                            image: MessageListInfo.people[i]
+                                                ["image"],
                                           )));
                             },
                             child: Padding(
@@ -128,7 +179,8 @@ class MessagesPage extends StatelessWidget {
                                     width: screenWidth / 36,
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [

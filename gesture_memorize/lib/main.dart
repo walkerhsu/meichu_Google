@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Pages/Note_Page/notes_page.dart';
+import 'package:gesture_memorize/Pages/Chat_Page/messages_page.dart';
 import 'package:gesture_memorize/firebase_options.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/routes/function1_page.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         Function2Page.routeName: (context) => const Function2Page(),
         GamePage.routeName: (context) => GamePage(),
         NotesPage.routeName: (context) => const NotesPage(),
+        MessagesPage.routeName: (context) => const MessagesPage(),
       },
     );
   }

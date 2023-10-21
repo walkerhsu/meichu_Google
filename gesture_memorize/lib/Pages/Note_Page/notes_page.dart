@@ -41,6 +41,7 @@ class _NotesPageState extends State<NotesPage> {
     Navigator.pushNamed(context, '/homePage');
   }
 
+
   @override
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
@@ -49,6 +50,9 @@ class _NotesPageState extends State<NotesPage> {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
+        if(actions[0]["name"] == "ArrowBack") {
+          onArrowBackPressed();
+        }
       });
     }
 
@@ -74,7 +78,8 @@ class _NotesPageState extends State<NotesPage> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
+                      onArrowBackPressed();
+                      // Navigator.pop(context);
                     },
                   ),
                   const Icon(Icons.notes_rounded, color: Colors.white),
