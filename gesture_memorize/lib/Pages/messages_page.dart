@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/chatbox_messages.dart';
 import 'package:gesture_memorize/Infomations/message_list_info.dart';
-import 'package:gesture_memorize/Pages/Message_Page/chat_page.dart';
+import 'package:gesture_memorize/Pages/Chat_Page/chat_page.dart';
 
 class MessagesPage extends StatelessWidget {
   const MessagesPage({Key? key}) : super(key: key);
