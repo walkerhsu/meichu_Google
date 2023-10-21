@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
+import 'package:gesture_memorize/Components/bottom_navigation.dart';
 import 'package:gesture_memorize/Components/notes_card.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
 import 'package:gesture_memorize/Pages/Note_Page/editing_page.dart';
+import 'package:gesture_memorize/global.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({
@@ -10,14 +12,46 @@ class NotesPage extends StatefulWidget {
   });
 
   static const String id = '/notes';
+  static String routeName = '/NotesPage';
 
   @override
   State<NotesPage> createState() => _NotesPageState();
 }
 
 class _NotesPageState extends State<NotesPage> {
+  reload() {
+    setState(() {
+      
+    });
+  }
+  
+  onArrowBackPressed() {
+    if (recording) {
+      gestures.gestures.last.add({
+        "name": "ArrowBack",
+        "time": 3,
+      });
+      actions.add({
+        "name": "ArrowBack",
+        "time": 3,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.pushNamed(context, '/homePage');
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+        if (actions[0]["name"] == "ReturnHome") {
+          onReturnHomePressed(context);
+        }
+        //NOTE - add any gestures here if needed
+      });
+    }
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 70, 130, 180),
       body: SafeArea(
@@ -82,6 +116,7 @@ class _NotesPageState extends State<NotesPage> {
         label: const Text('Add'),
         icon: const Icon(Icons.add),
       ),
+      bottomNavigationBar:  BottomNavigation(reload: reload),
     );
   }
 }
