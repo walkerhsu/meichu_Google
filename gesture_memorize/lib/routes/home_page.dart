@@ -71,6 +71,23 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pushNamed('/NotesPage');
   }
 
+  onMessagesPagePressed() {
+    if (recording) {
+      gestures.gestures.last.add({
+        "name": "MessagesPage",
+        "time": 3,
+      });
+      actions.add({
+        "name": "MessagesPage",
+        "time": 3,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    print("press");
+    Navigator.of(context).pushNamed('/MessagesPage');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
@@ -85,6 +102,9 @@ class _HomePageState extends State<HomePage> {
         //NOTE - add any gestures here if needed
         else if (actions[0]["name"] == "NotesPage") {
           onNotesPagePressed();
+        }
+        else if (actions[0]["name"] == "MessagesPage") {
+          onMessagesPagePressed();
         }
       });
     }
@@ -123,7 +143,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 100),
             IconButton(
               onPressed: () {
-                onFunction2Pressed();
+                onMessagesPagePressed();
               },
               icon: const Icon(
                 Icons.accessibility,
