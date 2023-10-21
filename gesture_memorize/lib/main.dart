@@ -4,10 +4,8 @@ import 'package:gesture_memorize/Pages/Note_Page/notes_page.dart';
 import 'package:gesture_memorize/Pages/Chat_Page/messages_page.dart';
 import 'package:gesture_memorize/firebase_options.dart';
 import 'package:gesture_memorize/global.dart';
-import 'package:gesture_memorize/routes/function1_page.dart';
-import 'package:gesture_memorize/routes/function2_page.dart';
 import 'package:gesture_memorize/Gestures/gestures.dart';
-import 'package:gesture_memorize/routes/home_page.dart';
+import 'package:gesture_memorize/Pages/home_page.dart';
 import 'package:gesture_memorize/Pages/game.dart';
 
 Future<void> main() async {
@@ -37,8 +35,6 @@ class MyApp extends StatelessWidget {
       initialRoute: HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => const HomePage(),
-        Function1Page.routeName: (context) => const Function1Page(),
-        Function2Page.routeName: (context) => const Function2Page(),
         GamePage.routeName: (context) => const GamePage(),
         NotesPage.routeName: (context) => const NotesPage(),
         MessagesPage.routeName: (context) => const MessagesPage(),

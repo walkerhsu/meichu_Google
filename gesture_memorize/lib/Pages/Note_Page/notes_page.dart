@@ -23,6 +23,7 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   onArrowBackPressed() {
+    num difference = calculateTimeDifference();
     if (recording) {
       print("arrowback");
       num difference = calculateTimeDifference();
