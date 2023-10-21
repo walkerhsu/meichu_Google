@@ -33,10 +33,8 @@ class MyApp extends StatelessWidget {
       initialRoute: HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => const HomePage(),
-        Function1Page.routeName: (context) =>
-            const Function1Page(),
-        Function2Page.routeName: (context) =>
-            const Function2Page(),
+        Function1Page.routeName: (context) => const Function1Page(),
+        Function2Page.routeName: (context) => const Function2Page(),
       },
     );
   }
