@@ -14,25 +14,31 @@ class EditingPage extends StatefulWidget {
 
 class _EditingPageState extends State<EditingPage> {
   String date = DateTime.now().toString();
-  final TextEditingController _titlecontroller = TextEditingController();
-  final TextEditingController _contentcontroller = TextEditingController();
+  final TextEditingController _titlecontroller =
+      TextEditingController(text: "");
+  final TextEditingController _contentcontroller =
+      TextEditingController(text: "");
   reload() {
     setState(() {});
   }
 
-  onArrowBackPressed() async {
-    await saveData();
+  onArrowBackPressed(String title, String docs) async {
+    await saveData(title, docs);
     if (!mounted) return;
     if (recording) {
-      print("arrowback");
       num difference = calculateTimeDifference();
+      if (difference >= 10000) difference = 10000;
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
         "time": difference,
+        "title": title,
+        "docs": docs,
       });
       actions.add({
         "name": "ArrowBack",
         "time": difference,
+        "title": title,
+        "docs": docs,
       });
     } else if (playing) {
       actions.removeAt(0);
@@ -40,10 +46,59 @@ class _EditingPageState extends State<EditingPage> {
     Navigator.pop(context);
   }
 
-  Future<int> saveData() async {
+  onTitleEdittingCompleted() {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      if (difference >= 2000) difference = 2000;
+      currentGestures.gestures.last["actions"].add({
+        "name": "TitleEdittingCompleted",
+        "time": difference,
+        "title": _titlecontroller.text,
+        "content": _contentcontroller.text,
+      });
+      actions.add({
+        "name": "TitleEdittingCompleted",
+        "time": difference,
+        "title": _titlecontroller.text,
+        "content": _contentcontroller.text,
+      });
+    } else if (playing) {
+      // print(actions[0]["title"]);
+      _titlecontroller.text = actions[0]["title"] ?? "";
+      _contentcontroller.text = actions[0]["content"] ?? "";
+      actions.removeAt(0);
+    }
+    reload();
+  }
+
+  onContentEdittingCompleted() {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      if (difference >= 2000) difference = 2000;
+      currentGestures.gestures.last["actions"].add({
+        "name": "ContentEdittingCompleted",
+        "time": difference,
+        "title": _titlecontroller.text,
+        "content": _contentcontroller.text,
+      });
+      actions.add({
+        "name": "ContentEdittingCompleted",
+        "time": difference,
+        "title": _titlecontroller.text,
+        "content": _contentcontroller.text,
+      });
+    } else if (playing) {
+      _titlecontroller.text = actions[0]["title"] ?? "";
+      _contentcontroller.text = actions[0]["content"] ?? "";
+      actions.removeAt(0);
+    }
+    reload();
+  }
+
+  Future<int> saveData(String title, String docs) async {
     await NoteCardInfo.addData({
-      "title": _titlecontroller.text,
-      "docs": _contentcontroller.text,
+      "title": title,
+      "docs": docs,
       "date": date,
     });
     return 1;
@@ -63,7 +118,12 @@ class _EditingPageState extends State<EditingPage> {
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         } else if (actions[0]["name"] == "ArrowBack") {
-          onArrowBackPressed();
+          onArrowBackPressed(
+              actions[0]["title"] ?? "", actions[0]["docs"] ?? "");
+        } else if (actions[0]["name"] == "TitleEdittingCompleted") {
+          onTitleEdittingCompleted();
+        } else if (actions[0]["name"] == "ContentEdittingCompleted") {
+          onContentEdittingCompleted();
         }
         //NOTE - add any gestures here if needed
       });
@@ -86,7 +146,8 @@ class _EditingPageState extends State<EditingPage> {
                       color: Colors.white,
                     ),
                     onPressed: () async {
-                      await onArrowBackPressed();
+                      await onArrowBackPressed(
+                          _titlecontroller.text, _contentcontroller.text);
                     },
                   ),
                   const Icon(Icons.new_releases_rounded, color: Colors.white),
@@ -104,6 +165,7 @@ class _EditingPageState extends State<EditingPage> {
                 decoration: const InputDecoration(
                   hintText: 'Note Title',
                 ),
+                onSubmitted: onTitleEdittingCompleted(),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 30,
@@ -119,6 +181,7 @@ class _EditingPageState extends State<EditingPage> {
                 decoration: const InputDecoration.collapsed(
                   hintText: 'Note Description',
                 ),
+                onSubmitted: onContentEdittingCompleted(),
               ),
               Expanded(child: Container()),
               Row(
@@ -126,7 +189,8 @@ class _EditingPageState extends State<EditingPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      await onArrowBackPressed();
+                      await onArrowBackPressed(
+                          _titlecontroller.text, _contentcontroller.text);
                     },
                     child: const Text('Save'),
                   ),
