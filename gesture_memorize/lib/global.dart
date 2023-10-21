@@ -6,7 +6,6 @@ List actions = [];
 bool recording = false;
 bool playing = false;
 
-
 onReturnHomePressed(context) {
   if (recording) {
     gestures.gestures.last.add({
@@ -16,5 +15,5 @@ onReturnHomePressed(context) {
   } else if (playing) {
     actions.removeAt(0);
   }
-  Navigator.pushNamed(context, '/homePage');
+  Navigator.pushReplacementNamed(context, '/homePage');
 }
