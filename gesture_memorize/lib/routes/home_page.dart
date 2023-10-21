@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/bottom_navigation.dart';
+import 'package:gesture_memorize/Pages/game.dart';
 import 'package:gesture_memorize/global.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,11 +13,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static String time = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
+  int _count = 0;
+
   reload() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
+
   onFunction1Pressed() {
     if (recording) {
       actions.add({
@@ -66,6 +70,23 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("HomePage"),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, GamePage.routeName, arguments: {
+                    "time": time,
+                    "count": _count,
+                    "addCount": () {
+                      _count += 1;
+                    }
+                  }),
+              icon: Icon(Icons.games_rounded)),
+          const SizedBox(width: 16),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +113,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar:  BottomNavigation(reload: reload),
+      bottomNavigationBar: BottomNavigation(reload: reload),
     );
   }
 }
