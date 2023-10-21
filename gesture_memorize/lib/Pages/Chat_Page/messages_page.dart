@@ -291,17 +291,3 @@ class _MessagesPageState extends State<MessagesPage> {
     );
   }
 }
-
-class SearchLists extends StatefulWidget {
-  const SearchLists({super.key});
-
-  @override
-  State<SearchLists> createState() => _SearchListsState();
-}
-
-class _SearchListsState extends State<SearchLists> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
