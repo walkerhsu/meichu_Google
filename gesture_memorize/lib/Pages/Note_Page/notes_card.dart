@@ -8,10 +8,12 @@ class NotesCard extends StatefulWidget {
     super.key,
     this.title = "T I T L E",
     this.description = "brief description",
+    this.date = "2021-10-10",
     required this.reload,
   });
   final String title;
   final String description;
+  final String date;
   final dynamic reload;
 
   @override
@@ -33,21 +35,25 @@ class _NotesCardState extends State<NotesCard> {
     } else if (playing) {
       actions.removeAt(0);
     }
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ReadingPage(title: title, contents: contents))).then(
-          (value) {
-            widget.reload();
-          }
-    );
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => ReadingPage(
+                  title: title,
+                  contents: contents,
+                  date: widget.date,
+                  reload: widget.reload,
+                )))
+        .then((value) {
+      widget.reload();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if(playing && actions.isEmpty) {
+    if (playing && actions.isEmpty) {
       playing = false;
       widget.reload();
-    }
-    else if (playing && actions.isNotEmpty) {
+    } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
@@ -68,7 +74,7 @@ class _NotesCardState extends State<NotesCard> {
           padding: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () => onCardPressed(widget.title, widget.description),
-  
+
             // Navigator.of(context).push(MaterialPageRoute(
             //     builder: (context) => ReadingPage(
             //         title: widget.title, contents: widget.description))),

@@ -56,21 +56,22 @@ class _NotesPageState extends State<NotesPage> {
     Navigator.push(context,
             MaterialPageRoute(builder: ((context) => const EditingPage())))
         .then((_) {
-          print("reload");
+      print("reload");
       reload();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if(playing && actions.isEmpty) {
+    if (playing && actions.isEmpty) {
       playing = false;
       reload();
-    }
-    else if (playing && actions.isNotEmpty) {
+    } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
+        } else if (actions[0]["name"] == "ArrowBack") {
+          Navigator.pop(context);
         }
         //NOTE - add any gestures here if needed
         else if (actions[0]["name"] == "ArrowBack") {
@@ -119,21 +120,35 @@ class _NotesPageState extends State<NotesPage> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height / 35),
               Expanded(
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    // childAspectRatio: 1.0,
-                    // crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 2.0,
-                  ),
-                  children: NoteCardInfo.notes
-                      .map((note) => NotesCard(
+                child: FutureBuilder(
+                    future: NoteCardInfo.readData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState != ConnectionState.done) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      final notes = snapshot.data!;
+                      return GridView(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          // childAspectRatio: 1.0,
+                          // crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 2.0,
+                        ),
+                        children: notes.map((note) {
+                          print(note);
+                          return NotesCard(
                             title: note['title'],
                             description: note['docs'],
-                            reload: reload
-                          ))
-                      .toList(),
-                ),
+                            date: note['date'],
+                            reload: reload,
+                          );
+                        }).toList(),
+                      );
+                    }),
               ),
             ],
           ),

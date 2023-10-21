@@ -3,6 +3,7 @@ import 'package:gesture_memorize/Components/Text/big_text.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/global.dart';
+import 'package:gesture_memorize/Infomations/note_card_info.dart';
 
 class EditingPage extends StatefulWidget {
   const EditingPage({super.key});
@@ -18,8 +19,10 @@ class _EditingPageState extends State<EditingPage> {
   reload() {
     setState(() {});
   }
-  
-  onArrowBackPressed() {
+
+  onArrowBackPressed() async {
+    await saveData();
+    if (!mounted) return;
     if (recording) {
       print("arrowback");
       num difference = calculateTimeDifference();
@@ -36,19 +39,28 @@ class _EditingPageState extends State<EditingPage> {
     }
     Navigator.pop(context);
   }
+
+  Future<int> saveData() async {
+    await NoteCardInfo.addData({
+      "title": _titlecontroller.text,
+      "docs": _contentcontroller.text,
+      "date": date,
+    });
+    return 1;
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(playing && actions.isEmpty) {
+    if (playing && actions.isEmpty) {
       playing = false;
       reload();
-    }
-    else if (playing && actions.isNotEmpty) {
+    } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
-        if(actions[0]["name"] == "ArrowBack") {
+        if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
       });
@@ -70,8 +82,8 @@ class _EditingPageState extends State<EditingPage> {
                       Icons.arrow_back_ios_rounded,
                       color: Colors.white,
                     ),
-                    onPressed: () {
-                      onArrowBackPressed();
+                    onPressed: () async {
+                      await onArrowBackPressed();
                     },
                   ),
                   const Icon(Icons.new_releases_rounded, color: Colors.white),
@@ -104,13 +116,25 @@ class _EditingPageState extends State<EditingPage> {
                 decoration: const InputDecoration.collapsed(
                   hintText: 'Note Description',
                 ),
-                
+              ),
+              Expanded(child: Container()),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      saveData().then((value) => Navigator.pop(context));
+                    },
+                    child: const Text('Save'),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigation(reload: reload, root: "editingPage"),
-      ); 
+      bottomNavigationBar:
+          BottomNavigation(reload: reload, root: "editingPage"),
+    );
   }
 }
