@@ -19,7 +19,7 @@ class _Function1PageState extends State<Function1Page> {
 
   onArrowBackPressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last['actions'].add({
         "name": "ArrowBack",
         "time": 3,
       });
@@ -52,7 +52,7 @@ class _Function1PageState extends State<Function1Page> {
           ],
         ),
       ),
-      bottomNavigationBar:  BottomNavigation(reload: reload),
+      bottomNavigationBar:  BottomNavigation(reload: reload, root: "function1Page"),
     );
   }
 }

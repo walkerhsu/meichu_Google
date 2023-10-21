@@ -15,7 +15,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  gestures = Gestures(name: "test");
+  currentGestures = Gestures(userName: "test");
   // await CloudStorage.uploadGestureData("test");
 
   runApp(const MyApp());

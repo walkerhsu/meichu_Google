@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         "name": "function1",
         "time": 3,
       });
-      gestures.gestures.last.add({
+      currentGestures.gestures.last['actions'].add({
         "name": "function1",
         "time": 3,
       });
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   onFunction2Pressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last['actions'].add({
         "name": "function2",
         "time": 3,
       });
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
 
   onNotesPagePressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last["actions"].add({
         "name": "NotesPage",
         "time": 3,
       });
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(reload: reload),
+      bottomNavigationBar:  BottomNavigation(reload: reload, root: "homePage"),
     );
   }
 }

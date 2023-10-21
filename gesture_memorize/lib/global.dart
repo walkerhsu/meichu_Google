@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Gestures/gestures.dart';
 
-Gestures gestures = Gestures(name: "test");
+Gestures currentGestures = Gestures(userName: "test");
 List actions = [];
 bool recording = false;
 bool playing = false;
 
 onReturnHomePressed(context) {
   if (recording) {
-    gestures.gestures.last.add({
+    currentGestures.gestures.last["actions"].add({
       "name": "ReturnHome",
       "time": 3,
     });
