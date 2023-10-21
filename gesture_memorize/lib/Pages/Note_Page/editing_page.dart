@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Constants/app_color.dart';
+import 'package:gesture_memorize/global.dart';
 
 class EditingPage extends StatefulWidget {
   const EditingPage({super.key});
@@ -13,9 +15,44 @@ class _EditingPageState extends State<EditingPage> {
   String date = DateTime.now().toString();
   final TextEditingController _titlecontroller = TextEditingController();
   final TextEditingController _contentcontroller = TextEditingController();
-
+  reload() {
+    setState(() {});
+  }
+  
+  onArrowBackPressed() {
+    if (recording) {
+      print("arrowback");
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "ArrowBack",
+        "time": difference,
+      });
+      actions.add({
+        "name": "ArrowBack",
+        "time": difference,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.pop(context);
+  }
   @override
   Widget build(BuildContext context) {
+    if(playing && actions.isEmpty) {
+      playing = false;
+      reload();
+    }
+    else if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
+        if (actions[0]["name"] == "ReturnHome") {
+          onReturnHomePressed(context);
+        }
+        //NOTE - add any gestures here if needed
+        if(actions[0]["name"] == "ArrowBack") {
+          onArrowBackPressed();
+        }
+      });
+    }
     return Scaffold(
       backgroundColor: AppColor.primaryColor,
       body: SafeArea(
@@ -34,7 +71,7 @@ class _EditingPageState extends State<EditingPage> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
+                      onArrowBackPressed();
                     },
                   ),
                   const Icon(Icons.new_releases_rounded, color: Colors.white),
@@ -73,6 +110,7 @@ class _EditingPageState extends State<EditingPage> {
           ),
         ),
       ),
-    ); 
+      bottomNavigationBar: BottomNavigation(reload: reload, root: "editingPage"),
+      ); 
   }
 }

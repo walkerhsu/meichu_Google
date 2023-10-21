@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Components/chatbox_messages.dart';
 import 'package:gesture_memorize/Infomations/message_list_info.dart';
 import 'package:gesture_memorize/Pages/Chat_Page/chat_page.dart';
@@ -40,8 +41,12 @@ class _MessagesPageState extends State<MessagesPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     // print(MediaQuery.of(context).size.height);
     // print(MediaQuery.of(context).size.width);
-    if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+    if(playing && actions.isEmpty) {
+      playing = false;
+      reload();
+    }
+    else if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
@@ -228,6 +233,7 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
         ),
       ),
+      bottomNavigationBar:  BottomNavigation(reload: reload, root: "MessagesPage"),
     );
   }
 }

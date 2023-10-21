@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gesture_memorize/Components/bottom_navigation.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/global.dart';
 
 class Function1Page extends StatefulWidget {

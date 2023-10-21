@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gesture_memorize/Components/bottom_navigation.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Pages/game.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:intl/intl.dart';
@@ -59,42 +59,47 @@ class _HomePageState extends State<HomePage> {
   onNotesPagePressed() {
     
     if (recording) {
+      num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "NotesPage",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "NotesPage",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
+      print(actions);
       actions.removeAt(0);
     }
-    print("press");
     Navigator.of(context).pushNamed('/NotesPage');
   }
 
   onMessagesPagePressed() {
+    num difference = calculateTimeDifference();
     if (recording) {
       currentGestures.gestures.last["actions"].add({
         "name": "MessagesPage",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "MessagesPage",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
       actions.removeAt(0);
     }
-    print("press");
     Navigator.of(context).pushNamed('/MessagesPage');
   }
 
   @override
   Widget build(BuildContext context) {
-    if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+    if(playing && actions.isEmpty) {
+      playing = false;
+      reload();
+    }
+    else if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         } else if (actions[0]["name"] == "function1") {

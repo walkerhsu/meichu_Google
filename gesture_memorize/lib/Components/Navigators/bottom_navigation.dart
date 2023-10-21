@@ -99,21 +99,23 @@ class _BottomNavigationState extends State<BottomNavigation> {
               title: const Text('Action Lists'),
               content: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.5,
-                child: Column(
-                  children: [
-                    for (int index = 0;
-                        index < filteredGestures.length;
-                        index++)
-                      TextButton(
-                        child: Text(filteredGestures[index]["gesturesName"]),
-                        onPressed: () {
-                          actions = filteredGestures[index]['actions'];
-                          playing = true;
-                          Navigator.pop(context);
-                          widget.reload();
-                        },
-                      )
-                  ],
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      for (int index = 0;
+                          index < filteredGestures.length;
+                          index++)
+                        TextButton(
+                          child: Text(filteredGestures[index]["gesturesName"]),
+                          onPressed: () {
+                            actions = filteredGestures[index]['actions'];
+                            playing = true;
+                            Navigator.pop(context);
+                            widget.reload();
+                          },
+                        )
+                    ],
+                  ),
                 ),
               ),
               actions: [
