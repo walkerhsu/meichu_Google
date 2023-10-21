@@ -44,6 +44,7 @@ dependencies:
     get: ^4.6.6
     video_player: ^2.7.2
     loading_animation_widget: ^1.2.0+4
+    icon_forest: ^1.1.8
 
 
 dev_dependencies:

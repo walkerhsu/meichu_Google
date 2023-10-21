@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
+import 'package:gesture_memorize/Components/Text/big_text.dart';
+import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
@@ -55,7 +57,9 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // print(MediaQuery.of(context).size.width);
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
@@ -67,11 +71,11 @@ class _ReadingPageState extends State<ReadingPage> {
           widget.reload();
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        } if (actions[0]["name"] == "ArrowBack") {
+        }
+        if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
         //NOTE - add any gestures here if needed
-        
       });
     }
 
@@ -84,67 +88,81 @@ class _ReadingPageState extends State<ReadingPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                IconButton(
-                  iconSize: 20,
-                  icon: const Icon(
-                    Icons.arrow_back_ios_rounded,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    onArrowBackPressed();
-                    // Navigator.pop(context);
-                  },
-                ),
-                // const Icon(Icons.notes_rounded, color: Colors.white),
-
-                // BigText(
-                //     text: widget.title,
-                //     fontColor: Colors.white,
-                //     size: 20.0),
-
-                // const Icon(Icons.notes_rounded, color: Colors.white),
-                Expanded(child: Container()),
-                IconButton(
-                  iconSize: 20,
-                  icon: const Icon(
-                    Icons.delete_rounded,
-                    color: Colors.white,
-                  ),
-                  onPressed: () async {
-                    await NoteCardInfo.deleteData(widget.date)
-                        .then((value) => Navigator.pop(context));
-                  },
-                ),
-              ]),
-              // SmallText(
-              //   text: widget.contents,
-              //   fontColor: Colors.white,
-              // )
-              Flexible(
-                child: Container(
-                  padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width / 30),
-                  child: TextField(
-                    controller: _titlecontroller,
-                    decoration: const InputDecoration.collapsed(hintText: "a"),
-                  ),
-
-                  // BigText(
-                  //     text: widget.title,
-                  //     fontColor: Colors.white,
-                  //     size: 20.0),
-                ),
-              ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
+                width: screenWidth,
+                child: Row(children: [
+                  IconButton(
+                    iconSize: 20,
+                    icon: const Icon(
+                      Icons.arrow_back_ios_rounded,
+                      color: AppColor.chocolate,
+                    ),
+                    onPressed: () {
+                      onArrowBackPressed();
+                      // Navigator.pop(context);
+                    },
+                  ),
+                  Flexible(
+                    child: BigText(
+                        maxlines:1,
+                        text:
+                            (widget.contents == "") ? "Untitled" : widget.contents,
+                        fontColor: AppColor.chocolate,
+                        size: 20.0),
+                  ),
+    
+                  const Spacer(),
+                  SizedBox(width: screenWidth/10),
+                  IconButton(
+                    iconSize: 25,
+                    icon: const Icon(
+                      Icons.delete_rounded,
+                      color: AppColor.chocolate,
+                    ),
+                    onPressed: () async {
+                      await NoteCardInfo.deleteData(widget.date)
+                          .then((value) => Navigator.pop(context));
+                    },
+                  ),
+                ]),
               ),
-              TextField(
-                controller: _contentcontroller,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration.collapsed(
-                  hintText: 'Note Description',
+              
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 50,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    SizedBox(width: screenWidth / 30),
+                    SizedBox(
+                      width: screenWidth * 0.8,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width / 30),
+                        child: TextField(
+                          controller: _contentcontroller,
+                          onChanged: (value) async {
+                            await NoteCardInfo.editData(
+                                widget.date,
+                                _contentcontroller.text,
+                                _contentcontroller.text);
+                            reload();
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: const InputDecoration.collapsed(
+                            hintText: 'write something here...',
+                          ),
+                          style: const TextStyle(
+                            fontFamily: "Quicksand",
+                            fontSize: 17.5,
+                            color: AppColor.chocolate,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(child: Container()),
@@ -154,10 +172,14 @@ class _ReadingPageState extends State<ReadingPage> {
                   ElevatedButton(
                     onPressed: () async {
                       await NoteCardInfo.editData(widget.date,
-                              _titlecontroller.text, _contentcontroller.text)
+                              _contentcontroller.text, _contentcontroller.text)
                           .then((value) => Navigator.pop(context));
                     },
-                    child: const Text('Save'),
+                    child: const SmallText(text:'Save', fontWeight: FontWeight.bold,),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                      
+                    ),
                   ),
                 ],
               ),

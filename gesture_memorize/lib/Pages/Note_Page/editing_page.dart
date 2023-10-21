@@ -129,7 +129,7 @@ class _EditingPageState extends State<EditingPage> {
       });
     }
     return Scaffold(
-      backgroundColor: AppColor.primaryColor,
+      backgroundColor: AppColor.almond,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

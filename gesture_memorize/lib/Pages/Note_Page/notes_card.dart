@@ -43,7 +43,7 @@ class _NotesCardState extends State<NotesCard> {
     Navigator.of(context)
         .push(MaterialPageRoute(
             builder: (context) => ReadingPage(
-                  title: title,
+                  title: (title == "") ? "Untitled" : title,
                   contents: contents,
                   date: widget.date,
                   reload: widget.reload,
@@ -70,7 +70,6 @@ class _NotesCardState extends State<NotesCard> {
           onCardPressed(actions[0]["title"], actions[0]["contents"]);
         }
         //NOTE - add any gestures here if needed
-        
       });
     }
     return InkWell(
@@ -88,25 +87,36 @@ class _NotesCardState extends State<NotesCard> {
             //     builder: (context) => ReadingPage(
             //         title: widget.title, contents: widget.description))),
             child: Container(
+              width: MediaQuery.of(context).size.width / 2.5,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Flexible(
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width / 30),
-                      child: SmallText(
-                          text: widget.title,
-                          fontColor: Colors.black,
-                          size: 17.5),
-                    ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.height / 45,
+                        left: MediaQuery.of(context).size.height / 45),
+                    // width: MediaQuery.of(context).size.width/4,
+                    child: SmallText(
+                        text: (widget.title == "") ? "Untitled" : widget.title,
+                        fontColor: Colors.black,
+                        size: 17.5),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height / 30,
+                    height: MediaQuery.of(context).size.height / 45,
                   ),
-                  SmallText(text: widget.description)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                          child: SmallText(
+                        text: widget.description,
+                        maxlines: 3,
+                      )),
+                    ],
+                  )
                 ],
               ),
             ),
