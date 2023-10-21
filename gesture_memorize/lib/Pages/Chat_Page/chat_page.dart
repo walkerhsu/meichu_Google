@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as rootBundle;
 import 'dart:convert';
 import 'package:gesture_memorize/Components/Text/small_text.dart';
-import 'package:gesture_memorize/Components/chatbox_messages.dart';
 import 'package:gesture_memorize/Infomations/chat_info.dart';
 
 
@@ -23,17 +22,10 @@ class ChatboxPage extends StatefulWidget {
 }
 
 class _ChatboxPageState extends State<ChatboxPage> {
-  int _index = 0;
   // String groupid = "ee4412";
   final TextEditingController _messagecontroller = TextEditingController();
   late String _typeMessage;
   List _allchat = [];
-
-  void _onItemTapped(int idx) {
-    setState(() {
-      _index = idx;
-    });
-  }
 
   Future<void> readJson() async {
     final String response = await rootBundle.rootBundle.loadString('assets/chat.json');

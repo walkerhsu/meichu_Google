@@ -23,9 +23,7 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   onArrowBackPressed() {
-    num difference = calculateTimeDifference();
     if (recording) {
-      print("arrowback");
       num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
@@ -84,7 +82,7 @@ class _NotesPageState extends State<NotesPage> {
     }
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 70, 130, 180),
+      backgroundColor: const Color.fromARGB(255, 70, 130, 180),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(10.0),

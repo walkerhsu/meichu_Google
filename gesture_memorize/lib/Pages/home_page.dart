@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gesture_memorize/Components/bottom_navigation.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Pages/game.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:intl/intl.dart';
@@ -20,45 +20,9 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  onFunction1Pressed() {
-    if (recording) {
-      num difference = calculateTimeDifference();
-      actions.add({
-        "name": "function1",
-        "time": difference,
-      });
-      currentGestures.gestures.last['actions'].add({
-        "name": "function1",
-        "time": difference,
-      });
-    } else if (playing) {
-      actions.removeAt(0);
-    }
-    Navigator.of(context).pushNamed(
-      '/function1Page',
-    );
-  }
-
-  onFunction2Pressed() {
-    if (recording) {
-      num difference = calculateTimeDifference();
-      currentGestures.gestures.last['actions'].add({
-        "name": "function2",
-        "time": difference,
-      });
-      actions.add({
-        "name": "function2",
-        "time": difference,
-      });
-    } else if (playing) {
-      actions.removeAt(0);
-    }
-    Navigator.of(context).pushNamed('/function2Page');
-  }
-
   onNotesPagePressed() {
-    num difference = calculateTimeDifference();
     if (recording) {
+      num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "NotesPage",
         "time": difference,
@@ -74,8 +38,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   onMessagesPagePressed() {
-    num difference = calculateTimeDifference();
     if (recording) {
+      num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "MessagesPage",
         "time": difference,
@@ -93,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         } else if (actions[0]["name"] == "NotesPage") {
@@ -119,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                       _count += 1;
                     }
                   }),
-              icon: Icon(Icons.games_rounded)),
+              icon: const Icon(Icons.games_rounded)),
           const SizedBox(width: 16),
         ],
       ),
@@ -127,29 +91,42 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 onNotesPagePressed();
               },
-              icon: const Icon(
-                Icons.accessibility,
-                size: 100,
-              ),
+              child: Image.asset(
+                'assets/images/notebook.png',
+                width: 100,
+                height: 100,
+              )
             ),
             const SizedBox(height: 100),
-            IconButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 onMessagesPagePressed();
               },
-              icon: const Icon(
-                Icons.accessibility,
-                size: 100,
-              ),
+              child: Image.asset(
+                'assets/images/instagram.png',
+                width: 100,
+                height: 100,
+              )
+            ),
+            const SizedBox(height: 100),
+            InkWell(
+              onTap: () {
+                onMessagesPagePressed();
+              },
+              child: Image.asset(
+                'assets/images/game-console.png',
+                width: 100,
+                height: 100,
+              )
             )
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigation(reload: reload, root: "homePage"),
+      bottomNavigationBar: BottomNavigation(reload: reload, root: "/homePage"),
     );
   }
 }
