@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
-import 'package:gesture_memorize/Pages/Game_Page/game.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:intl/intl.dart';
 
@@ -87,7 +86,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          print(currentGestures.gestures);
+          reload();
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         } else if (actions[0]["name"] == "NotesPage") {
           onNotesPagePressed();

@@ -56,13 +56,16 @@ class _EditingPageState extends State<EditingPage> {
       reload();
     } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          reload();
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        }
-        //NOTE - add any gestures here if needed
-        if (actions[0]["name"] == "ArrowBack") {
+        } else if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
+        //NOTE - add any gestures here if needed
       });
     }
     return Scaffold(
@@ -122,8 +125,8 @@ class _EditingPageState extends State<EditingPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      saveData().then((value) => Navigator.pop(context));
+                    onPressed: () async {
+                      await onArrowBackPressed();
                     },
                     child: const Text('Save'),
                   ),

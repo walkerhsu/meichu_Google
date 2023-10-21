@@ -46,11 +46,17 @@ class _MessagesPageState extends State<MessagesPage> {
       reload();
     } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          print(currentGestures.gestures);
+          reload();
+        }
+        else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
-        if (actions[0]["name"] == "ArrowBack") {
+        else if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
         }
       });
