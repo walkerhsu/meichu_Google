@@ -39,6 +39,8 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    final users = {...MessageListInfo.people, ...MessageListInfo.recentpeople};
     // print(MediaQuery.of(context).size.height);
     // print(MediaQuery.of(context).size.width);
     if (playing && actions.isEmpty) {
@@ -51,8 +53,7 @@ class _MessagesPageState extends State<MessagesPage> {
           actions = [];
           print(currentGestures.gestures);
           reload();
-        }
-        else if (actions[0]["name"] == "ReturnHome") {
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
@@ -61,6 +62,16 @@ class _MessagesPageState extends State<MessagesPage> {
         }
       });
     }
+    List<Map<String, dynamic>> searchName(String str) {
+      List<Map<String, dynamic>> results = [];
+      for (var user in users) {
+        if (user['name'].toLowerCase().contains(str.toLowerCase())) {
+          results.add(user);
+        }
+      }
+      return results;
+    }
+
     return Scaffold(
       backgroundColor: Color(0xff1B202D),
       body: Padding(
@@ -92,13 +103,41 @@ class _MessagesPageState extends State<MessagesPage> {
                         color: Colors.white),
                   ),
                   const Spacer(),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.search,
-                        color: Colors.white,
-                        size: 36,
-                      ))
+                  SearchAnchor(builder:
+                      (BuildContext context, SearchController controller) {
+                    return IconButton(
+                        onPressed: () {
+                          controller.openView();
+                        },
+                        icon: const Icon(
+                          Icons.search,
+                          color: Colors.white,
+                          size: 36,
+                        ));
+                  }, suggestionsBuilder:
+                      (BuildContext context, SearchController controller) {
+                    List<Map<String, dynamic>> results =
+                        searchName(controller.text);
+                    // print(results.take(15).toList());
+                    return results.take(15).map((user) {
+                      return ListTile(
+                        title: Row(
+                          children: <Widget>[
+                            CircleAvatar(
+                                backgroundImage: AssetImage(user['image'])),
+                            // const SizedBox(width: 30),
+                            Text(user['name']),
+                          ],
+                        ),
+                        onTap: () {
+                          setState(() {
+                            controller.closeView(user['name']);
+                            controller.text = '';
+                          });
+                        },
+                      );
+                    });
+                  }),
                 ],
               ),
               SizedBox(
@@ -159,12 +198,13 @@ class _MessagesPageState extends State<MessagesPage> {
                       )),
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: screenHeight / 65,
-                      bottom: screenWidth / 50),
+                        top: screenHeight / 65, bottom: screenWidth / 50),
                     child: Expanded(
                       child: ListView(
                         children: [
-                          for (int i = 0; i < MessageListInfo.people.length; i++)
+                          for (int i = 0;
+                              i < MessageListInfo.people.length;
+                              i++)
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -187,7 +227,8 @@ class _MessagesPageState extends State<MessagesPage> {
                                     CircleAvatar(
                                       radius: 30,
                                       backgroundImage: Image.asset(
-                                              MessageListInfo.people[i]["image"])
+                                              MessageListInfo.people[i]
+                                                  ["image"])
                                           .image,
                                     ),
                                     SizedBox(
@@ -202,7 +243,8 @@ class _MessagesPageState extends State<MessagesPage> {
                                             SizedBox(
                                               width: screenWidth / 3,
                                               child: Text(
-                                                MessageListInfo.people[i]["name"],
+                                                MessageListInfo.people[i]
+                                                    ["name"],
                                                 style: const TextStyle(
                                                     color: Colors.white,
                                                     fontFamily: ('Quicksand'),

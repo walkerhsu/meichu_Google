@@ -17,6 +17,9 @@ Future<void> main() async {
   currentGestures = Gestures(userName: "test");
   // await CloudStorage.uploadGestureData("test");
   initTime = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
+  lastclaimtime =
+      DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString();
+  count = 0;
   runApp(const MyApp());
 }
 

@@ -12,7 +12,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _count = 0;
   reload() {
     setState(() {});
   }
@@ -66,13 +65,12 @@ class _HomePageState extends State<HomePage> {
       actions.removeAt(0);
     }
     Navigator.of(context).pushNamed('/GamePage', arguments: {
-      "count": _count,
+      "count": count,
       "addCount": () {
-        _count += 1;
+        count += 1;
       },
       "rewardCount": () {
-        _count += 50;
-        print("in");
+        count += 50;
       },
       "lastClaimTime": lastclaimtime,
       "updateClaimTime": () {
