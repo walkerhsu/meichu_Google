@@ -40,7 +40,6 @@ class _ChatboxPageState extends State<ChatboxPage> {
     final data = await json.decode(response);
     setState(() {
       _allchat = data['allchat'];
-      print("in");
     });
   }
 
@@ -226,31 +225,6 @@ class _ChatboxPageState extends State<ChatboxPage> {
                 ),
               ],
             ),
-            // bottomNavigationBar: BottomNavigationBar(
-            //   items: const <BottomNavigationBarItem>[
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.home_filled),
-            //       label: 'Home',
-            //      ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.group_rounded),
-            //       label: 'Groups',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.leaderboard_rounded),
-            //       label: 'Notes',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.settings_rounded),
-            //       label: 'Settings',
-            //     ),
-            //   ],
-            //   currentIndex: _index,
-            //   selectedItemColor: Colors.amber[800],
-            //   unselectedItemColor: Colors.grey[800],
-            //   backgroundColor: Colors.grey[800],
-            //   onTap: _onItemTapped,
-            // ),
           ),
         ),
       ),

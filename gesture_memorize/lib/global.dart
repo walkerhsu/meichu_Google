@@ -8,9 +8,14 @@ bool playing = false;
 
 onReturnHomePressed(context) {
   if (recording) {
+    num difference = calculateTimeDifference();
     currentGestures.gestures.last["actions"].add({
       "name": "ReturnHome",
-      "time": 3,
+      "time": difference,
+    });
+    actions.add({
+      "name": "ReturnHome",
+      "time": difference,
     });
   } else if (playing) {
     actions.removeAt(0);

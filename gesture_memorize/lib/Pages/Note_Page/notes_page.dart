@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
-import 'package:gesture_memorize/Components/bottom_navigation.dart';
-import 'package:gesture_memorize/Components/notes_card.dart';
+import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
+import 'package:gesture_memorize/Pages/Note_Page/notes_card.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
 import 'package:gesture_memorize/Pages/Note_Page/editing_page.dart';
 import 'package:gesture_memorize/global.dart';
@@ -19,38 +19,65 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   reload() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
-  
+
   onArrowBackPressed() {
     if (recording) {
+      print("arrowback");
+      num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
     } else if (playing) {
       actions.removeAt(0);
     }
-    Navigator.pushNamed(context, '/homePage');
+    Navigator.pop(context);
   }
 
+  onAddNewNotePressed() {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "AddNewNote",
+        "time": difference,
+      });
+      actions.add({
+        "name": "AddNewNote",
+        "time": difference,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => const EditingPage())))
+        .then((_) {
+          print("reload");
+      reload();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+    if(playing && actions.isEmpty) {
+      playing = false;
+      reload();
+    }
+    else if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
         //NOTE - add any gestures here if needed
-        if(actions[0]["name"] == "ArrowBack") {
+        else if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
+        } else if (actions[0]["name"] == "AddNewNote") {
+          onAddNewNotePressed();
         }
       });
     }
@@ -101,11 +128,12 @@ class _NotesPageState extends State<NotesPage> {
                     mainAxisSpacing: 2.0,
                   ),
                   children: NoteCardInfo.notes
-                      .map((note) => 
-                      NotesCard(
+                      .map((note) => NotesCard(
                             title: note['title'],
                             description: note['docs'],
-                          )).toList(),
+                            reload: reload
+                          ))
+                      .toList(),
                 ),
               ),
             ],
@@ -114,13 +142,14 @@ class _NotesPageState extends State<NotesPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: ((context) => EditingPage())));
+          onAddNewNotePressed();
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: ((context) => EditingPage())));
         },
         label: const Text('Add'),
         icon: const Icon(Icons.add),
       ),
-      bottomNavigationBar:  BottomNavigation(reload: reload, root: "notesPage"),
+      bottomNavigationBar: BottomNavigation(reload: reload, root: "NotesPage"),
     );
   }
 }
