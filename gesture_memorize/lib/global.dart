@@ -15,5 +15,5 @@ onReturnHomePressed(context) {
   } else if (playing) {
     actions.removeAt(0);
   }
-  Navigator.pushReplacementNamed(context, '/homePage');
+  Navigator.pushNamedAndRemoveUntil(context, '/homePage', (r)=>false);
 }

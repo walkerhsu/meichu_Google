@@ -11,7 +11,6 @@ class NotesPage extends StatefulWidget {
     super.key,
   });
 
-  static const String id = '/notes';
   static String routeName = '/NotesPage';
 
   @override
@@ -27,7 +26,7 @@ class _NotesPageState extends State<NotesPage> {
   
   onArrowBackPressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
         "time": 3,
       });
@@ -121,7 +120,7 @@ class _NotesPageState extends State<NotesPage> {
         label: const Text('Add'),
         icon: const Icon(Icons.add),
       ),
-      bottomNavigationBar:  BottomNavigation(reload: reload),
+      bottomNavigationBar:  BottomNavigation(reload: reload, root: "notesPage"),
     );
   }
 }
