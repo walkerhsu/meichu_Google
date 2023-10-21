@@ -76,7 +76,7 @@ class _ReadingPageState extends State<ReadingPage> {
     }
 
     return Scaffold(
-        backgroundColor: AppColor.primaryColor,
+        backgroundColor: AppColor.almond,
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.all(16.0),

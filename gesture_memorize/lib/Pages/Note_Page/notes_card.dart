@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/small_text.dart';
+import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/Pages/Note_Page/reading_page.dart';
 import 'package:gesture_memorize/global.dart';
 
@@ -77,7 +78,7 @@ class _NotesCardState extends State<NotesCard> {
         Navigator.pushNamed(context, '/notes');
       },
       child: Card(
-        color: Colors.white,
+        color: AppColor.almond,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: GestureDetector(

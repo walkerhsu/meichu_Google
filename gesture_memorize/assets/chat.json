@@ -1,40 +1,48 @@
 {
   "allchat": [
     {
-      "sender": "snoopy",
+      "sender": "me",
+      "receiver": "snoopy",
       "content": "How are u? Anything exciting happening on your end?"
     },
     {
-      "sender": "snoopy",
+      "sender": "me",
+      "receiver": "snoopy",
       "content": "I like this!"
     },
     {
-      "sender": "Beautiful girl",
+      "sender": "me",
+      "receiver": "Beautiful girl",
       "content": "I love u"
     },
     {
-      "sender": "Beautiful girl",
+      "sender": "me",
+      "receiver": "Beautiful girl",
       "content": "I like today"
     },
     {
-      "sender": "William",
+      "sender": "me",
+      "receiver": "William",
       "content": "I am so good"
     },
     {
-      "sender": "William",
+      "sender": "me",
+      "receiver": "William",
       "content": "Today is a good day"
     },
     {
-      "sender": "rabbit",
+      "sender": "me",
+      "receiver": "rabbit",
       "content": "RRRRRRRRRRRRRRRRRRRRRR"
     },
     {
-      "sender": "chatgpt",
-      "receiver": "snoopy",
+      "sender": "snoopy",
+      "receiver": "me",
       "content": "That's fantastic to hear! What made your day so good?"
     },
     {
-      "sender": "stitch",
+      "sender": "me",
+      "receiver": "stitch",
       "content": "sss..."
     }
   ]

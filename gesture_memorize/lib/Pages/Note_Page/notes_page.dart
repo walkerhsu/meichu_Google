@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
+import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/Pages/Note_Page/notes_card.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
 import 'package:gesture_memorize/Pages/Note_Page/editing_page.dart';
@@ -89,7 +90,7 @@ class _NotesPageState extends State<NotesPage> {
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 70, 130, 180),
+      backgroundColor: AppColor.secondaryColor,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(10.0),
