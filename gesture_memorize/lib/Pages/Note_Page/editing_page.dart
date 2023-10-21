@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
@@ -18,15 +17,6 @@ class EditingPage extends StatefulWidget {
 
 class _EditingPageState extends State<EditingPage> {
   String date = DateTime.now().toString();
-  // final time = DateTime.now().month.toString() +
-  //     "/" +
-  //     DateTime.now().day.toString() +
-  //     "/" +
-  //     DateTime.now().year.toString() +
-  //     " at " +
-  //     DateTime.now().hour.toString() +
-  //     ":" +
-  //     DateTime.now().minute.toString();
 
   late final String time;
   final TextEditingController _titlecontroller =
@@ -74,31 +64,6 @@ class _EditingPageState extends State<EditingPage> {
     timer?.cancel();
     Navigator.pop(context);
   }
-
-  // onTitleEdittingCompleted() {
-  //   if (recording) {
-  //     num difference = calculateTimeDifference();
-  //     if (difference >= 2000) difference = 2000;
-  //     currentGestures.gestures.last["actions"].add({
-  //       "name": "TitleEdittingCompleted",
-  //       "time": difference,
-  //       "title": _titlecontroller.text,
-  //       "content": _contentcontroller.text,
-  //     });
-  //     actions.add({
-  //       "name": "TitleEdittingCompleted",
-  //       "time": difference,
-  //       "title": _titlecontroller.text,
-  //       "content": _contentcontroller.text,
-  //     });
-  //   } else if (playing && actions.isNotEmpty) {
-  //     // print(actions[0]["title"]);
-  //     _titlecontroller.text = actions[0]["title"] ?? "";
-  //     _contentcontroller.text = actions[0]["content"] ?? "";
-  //     actions.removeAt(0);
-  //     reload();
-  //   }
-  // }
 
   onContentEdittingCompleted() {
     if (recording) {
@@ -216,36 +181,6 @@ class _EditingPageState extends State<EditingPage> {
                 ),
               ),
 
-              // SafeArea(
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(18.0),
-              //     child: TextField(
-              //       controller: _titlecontroller,
-              //       decoration: const InputDecoration.collapsed(
-              //         hintText: 'Note Title',
-              //       ),
-              //       onSubmitted: onTitleEdittingCompleted(),
-              //     ),
-              //   ),
-              // ),
-
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height / 30,
-              // ),
-
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height / 50,
-              // ),
-
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height / 30,
-              // ),
-              // TextField(
-              //   controller: _contentcontroller,
-              //   keyboardType: TextInputType.multiline,
-              //   maxLines: null,
-              //   decoration: const InputDecoration.collapsed(
-              //     hintText: 'Note Description',
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

@@ -215,10 +215,6 @@ class _ReadingPageState extends State<ReadingPage> {
                   ),
                 ],
               ),
-              // SmallText(
-              //   text: widget.contents,
-              //   fontColor: Colors.white,
-              // )
             ],
           ),
         )),
