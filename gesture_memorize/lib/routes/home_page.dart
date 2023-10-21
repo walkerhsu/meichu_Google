@@ -54,6 +54,23 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pushNamed('/function2Page');
   }
 
+  onNotesPagePressed() {
+    if (recording) {
+      gestures.gestures.last.add({
+        "name": "NotesPage",
+        "time": 3,
+      });
+      actions.add({
+        "name": "NotesPage",
+        "time": 3,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    print("press");
+    Navigator.of(context).pushNamed('/NotesPage');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
@@ -66,6 +83,9 @@ class _HomePageState extends State<HomePage> {
           onFunction2Pressed();
         }
         //NOTE - add any gestures here if needed
+        else if (actions[0]["name"] == "NotesPage") {
+          onNotesPagePressed();
+        }
       });
     }
 
@@ -93,7 +113,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                onFunction1Pressed();
+                onNotesPagePressed();
               },
               icon: const Icon(
                 Icons.accessibility,
