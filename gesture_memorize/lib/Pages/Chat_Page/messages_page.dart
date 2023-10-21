@@ -91,6 +91,7 @@ class _MessagesPageState extends State<MessagesPage> {
                         fontSize: 30,
                         color: Colors.white),
                   ),
+                  const Spacer(),
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(
