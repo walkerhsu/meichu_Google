@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Gestures/gestures.dart';
+import 'package:intl/intl.dart';
 
 Gestures currentGestures = Gestures(userName: "test");
 List actions = [];
 bool recording = false;
 bool playing = false;
+String initTime = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
+String lastclaimtime =
+    DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString();
+int rewardInval = 90;
 
 onReturnHomePressed(context) {
   if (recording) {
