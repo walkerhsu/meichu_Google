@@ -20,7 +20,7 @@ class _MessagesPageState extends State<MessagesPage> {
 
   onArrowBackPressed() {
     if (recording) {
-      gestures.gestures.last.add({
+      currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
         "time": 3,
       });

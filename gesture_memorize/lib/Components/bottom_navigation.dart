@@ -30,7 +30,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
   }
 
   onRecordPressed() {
+
     currentGestures.gestures.add({
+      "lastActionTime": DateTime.now().millisecondsSinceEpoch, 
       "root": widget.root,
       "gesturesName": "",
       "actions": [],

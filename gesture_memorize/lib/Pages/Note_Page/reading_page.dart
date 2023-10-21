@@ -91,6 +91,6 @@ class _ReadingPageState extends State<ReadingPage> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavigation(reload: reload));
+        bottomNavigationBar: BottomNavigation(reload: reload, root: "readingPage"));
   }
 }

@@ -17,3 +17,11 @@ onReturnHomePressed(context) {
   }
   Navigator.pushNamedAndRemoveUntil(context, '/homePage', (r)=>false);
 }
+
+num calculateTimeDifference () {
+  num currentTime = DateTime.now().millisecondsSinceEpoch;
+  num difference =
+      currentTime - currentGestures.gestures.last['lastActionTime'];
+  currentGestures.gestures.last['lastActionTime'] = currentTime;
+  return difference;
+}

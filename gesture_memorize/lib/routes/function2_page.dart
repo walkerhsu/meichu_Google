@@ -18,13 +18,14 @@ class _Function2PageState extends State<Function2Page> {
   }
   onArrowBackPressed() {
     if (recording) {
+      num difference = calculateTimeDifference();
       currentGestures.gestures.last['actions'].add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
       actions.add({
         "name": "ArrowBack",
-        "time": 3,
+        "time": difference,
       });
     } else {
       actions.removeAt(0);
@@ -35,7 +36,7 @@ class _Function2PageState extends State<Function2Page> {
   @override
   Widget build(BuildContext context) {
     if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(seconds: actions[0]["time"]), () {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
         if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
         }
