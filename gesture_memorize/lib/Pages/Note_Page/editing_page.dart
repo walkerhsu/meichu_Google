@@ -67,8 +67,8 @@ class _EditingPageState extends State<EditingPage> {
       _titlecontroller.text = actions[0]["title"] ?? "";
       _contentcontroller.text = actions[0]["content"] ?? "";
       actions.removeAt(0);
+      reload();
     }
-    reload();
   }
 
   onContentEdittingCompleted() {
@@ -91,8 +91,8 @@ class _EditingPageState extends State<EditingPage> {
       _titlecontroller.text = actions[0]["title"] ?? "";
       _contentcontroller.text = actions[0]["content"] ?? "";
       actions.removeAt(0);
+      reload();
     }
-    reload();
   }
 
   Future<int> saveData(String title, String docs) async {

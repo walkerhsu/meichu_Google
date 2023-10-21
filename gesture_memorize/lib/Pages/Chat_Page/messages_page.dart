@@ -35,6 +35,34 @@ class _MessagesPageState extends State<MessagesPage> {
     Navigator.pop(context);
   }
 
+  onMessagePressed(Map<String, dynamic> person) {
+    if (recording) {
+      print("in recording");
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "Message",
+        "time": difference,
+        "person": person,
+      });
+      actions.add({
+        "name": "Message",
+        "time": difference,
+        "person": person,
+      });
+    } else if (playing) {
+      actions.removeAt(0);
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChatboxPage(
+                  name: person["name"],
+                  image: person["image"],
+                ))).then((_) {
+      reload();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -51,15 +79,15 @@ class _MessagesPageState extends State<MessagesPage> {
         if (!playing || actions.isEmpty) {
           playing = false;
           actions = [];
-          print(currentGestures.gestures);
           reload();
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
+        } else if (actions[0]["name"] == "ArrowBack") {
+          onArrowBackPressed();
+        } else if (actions[0]["name"] == "Message") {
+          onMessagePressed(actions[0]["person"]);
         }
         //NOTE - add any gestures here if needed
-        else if (actions[0]["name"] == "ArrowBack") {
-          onArrowBackPressed();
-        }
       });
     }
     List<Map<String, dynamic>> searchName(String str) {
@@ -73,9 +101,9 @@ class _MessagesPageState extends State<MessagesPage> {
     }
 
     return Scaffold(
-      backgroundColor: Color(0xff1B202D),
+      backgroundColor: const Color(0xff1B202D),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,15 +235,7 @@ class _MessagesPageState extends State<MessagesPage> {
                               i++)
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChatboxPage(
-                                              name: MessageListInfo.people[i]
-                                                  ["name"],
-                                              image: MessageListInfo.people[i]
-                                                  ["image"],
-                                            )));
+                                onMessagePressed(MessageListInfo.people[i]);
                               },
                               child: Padding(
                                 padding: EdgeInsets.only(

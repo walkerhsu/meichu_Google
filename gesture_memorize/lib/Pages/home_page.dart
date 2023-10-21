@@ -87,7 +87,6 @@ class _HomePageState extends State<HomePage> {
         if (!playing || actions.isEmpty) {
           playing = false;
           actions = [];
-          print(currentGestures.gestures);
           reload();
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);

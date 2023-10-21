@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' as rootBundle;
-import 'dart:convert';
 import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Infomations/chat_info.dart';
-import 'package:gesture_memorize/data.dart';
 import 'package:gesture_memorize/global.dart';
 
 class ChatboxPage extends StatefulWidget {
@@ -23,9 +20,9 @@ class ChatboxPage extends StatefulWidget {
 }
 
 class _ChatboxPageState extends State<ChatboxPage> {
-  final TextEditingController _messagecontroller = TextEditingController();
-  late String _typeMessage;
-  static List<Map<String, dynamic>> _allchat = [];
+  final TextEditingController _messagecontroller =
+      TextEditingController(text: "");
+  String _typeMessage = "";
 
   Future<List<dynamic>> filteredReadData() async {
     List<Map<String, dynamic>> data = await ChatInfo.readData("chat.json");
@@ -37,22 +34,38 @@ class _ChatboxPageState extends State<ChatboxPage> {
         filteredChats.add(chat);
       if (chat["receiver"] == "me") receivedChats.add(chat);
     });
-    print("filterChat: ");
-    print(filteredChats);
-    print("receivedChats: ");
-    print(receivedChats);
     return [filteredChats, receivedChats];
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   setState(() {
-  //     _allchat = data["allchat"];
-  //   });
-  // }
+  onSendMessagePressed() async {
+    print("onSendMessagePressed");
+    if (recording) {
+      num difference = calculateTimeDifference();
+      if(difference > 2000) difference = 2000;
+      currentGestures.gestures.last["actions"].add({
+        "name": "MessageSent",
+        "time": difference,
+        "message": _typeMessage,
+      });
+      actions.add({
+        "name": "MessageSent",
+        "time": difference,
+        "message": _typeMessage,
+      });
+    } else if (playing) {
+      _typeMessage = actions[0]["message"] ?? "";
+      actions.removeAt(0);
+    }
+
+    saveData().then((_) {
+      _messagecontroller.clear();
+      reload();
+    });
+  }
 
   Future<int> saveData() async {
+    print("_typeMessage");
+    print(_typeMessage);
     await ChatInfo.addData({
       "sender": "me",
       "receiver": widget.name,
@@ -68,6 +81,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
   onArrowBackPressed() {
     if (recording) {
       num difference = calculateTimeDifference();
+      if (difference <= 500) difference = 500;
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
         "time": difference,
@@ -88,22 +102,29 @@ class _ChatboxPageState extends State<ChatboxPage> {
     String image = widget.image;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-
+    print(actions);
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
     } else if (playing && actions.isNotEmpty) {
+      if(actions[0]["name"] == "MessageSent") {
+        _typeMessage = actions[0]["message"] ?? "";
+        _messagecontroller.text = _typeMessage;
+      }
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
-          onReturnHomePressed(context);
+        // print(actions?[0]["name"]);
+        if (!playing || actions.isEmpty) {
+          playing = false;
+          actions = [];
+          reload();
+        } else if (actions[0]["name"] == "ArrowBack") {
+          onArrowBackPressed();
+        } else if (actions[0]["name"] == "MessageSent") {
+          onSendMessagePressed();
         }
         //NOTE - add any gestures here if needed
-        if (actions[0]["name"] == "ArrowBack") {
-          onArrowBackPressed();
-        }
       });
     }
-    print("rerender");
     return Scaffold(
       backgroundColor: const Color(0xff1B202D),
       body: SafeArea(
@@ -122,7 +143,6 @@ class _ChatboxPageState extends State<ChatboxPage> {
                       ),
                       onPressed: () {
                         onArrowBackPressed();
-                        // Navigator.pop(context);
                       },
                     ),
                     CircleAvatar(
@@ -143,10 +163,10 @@ class _ChatboxPageState extends State<ChatboxPage> {
                             fontColor: Colors.white),
                         SizedBox(height: screenHeight / 120),
                         SmallText(
-                            text: '#' + widget.groupid, fontColor: Colors.white)
+                            text: '#${widget.groupid}', fontColor: Colors.white)
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
                   ],
                 ),
                 SizedBox(height: screenHeight / 24),
@@ -167,32 +187,35 @@ class _ChatboxPageState extends State<ChatboxPage> {
                         return Text('Error: ${snapshot.error}');
                       }
                       final filteredchats = snapshot.data![0];
-                      print("load filterChats");
-                      print(filteredchats);
-                      return SizedBox(
-                        width: screenWidth,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: filteredchats
-                              .map<Widget>((chat) => Padding(
-                                    padding: EdgeInsets.only(
-                                        right: screenWidth / 50,
-                                        bottom: screenHeight / 71.4),
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: Color(0xff373E4E)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: SmallText(
-                                            text: chat["content"],
-                                            fontColor: Colors.white,
-                                            maxlines: 100,
-                                          ),
-                                        )),
-                                  ))
-                              .toList(),
+                      return Expanded(
+                        child: SingleChildScrollView(
+                          child: SizedBox(
+                            width: screenWidth,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: filteredchats
+                                  .map<Widget>((chat) => Padding(
+                                        padding: EdgeInsets.only(
+                                            right: screenWidth / 50,
+                                            bottom: screenHeight / 71.4),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: const Color(0xff373E4E)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: SmallText(
+                                                text: chat["content"],
+                                                fontColor: Colors.white,
+                                                maxlines: 100,
+                                              ),
+                                            )),
+                                      ))
+                                  .toList(),
+                            ),
+                          ),
                         ),
                       );
                     }),
@@ -222,9 +245,9 @@ class _ChatboxPageState extends State<ChatboxPage> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(20),
-                                          color: Color(0xff373E4E)),
+                                          color: const Color(0xff373E4E)),
                                       child: Padding(
-                                        padding: EdgeInsets.all(10.0),
+                                        padding: const EdgeInsets.all(10.0),
                                         child: SmallText(
                                           text: chat["content"],
                                           fontColor: Colors.white,
@@ -236,7 +259,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                       );
                     }),
 
-                const Spacer(),
+                // const Spacer(),
                 Container(
                   padding: EdgeInsets.only(bottom: screenWidth / 45),
                   // height: screenHeight/10,
@@ -246,7 +269,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                     width: screenWidth * 0.95,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: Color(0xff3D4354)),
+                        color: const Color(0xff3D4354)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -255,20 +278,21 @@ class _ChatboxPageState extends State<ChatboxPage> {
                             flex: 8,
                             // width: screenWidth * 0.65,
                             // height: screenHeight / 12,
-                            child: TextFormField(
+                            child: TextField(
                               controller: _messagecontroller,
                               onChanged: (value) {
                                 _typeMessage = value;
                               },
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               textAlignVertical: TextAlignVertical.center,
                               decoration: const InputDecoration.collapsed(
-                                  filled: true,
-                                  fillColor: Color(0xff3D4354),
-                                  hintText: 'Message...',
-                                  hintStyle: TextStyle(color: Colors.white)),
+                                filled: true,
+                                fillColor: Color(0xff3D4354),
+                                hintText: 'Message...',
+                                hintStyle: TextStyle(color: Colors.white),
+                              ),
                               // focusNode: _focusNode,
                             ),
                           ),
@@ -281,10 +305,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                             child: IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () async {
-                                await saveData().then((value) {
-                                  _messagecontroller.clear();
-                                  reload();
-                                });
+                                await onSendMessagePressed();
                               },
                               color: Colors.white54,
                             ),
