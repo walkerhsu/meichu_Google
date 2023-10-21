@@ -45,6 +45,8 @@ dependencies:
     video_player: ^2.7.2
     loading_animation_widget: ^1.2.0+4
     icon_forest: ^1.1.8
+    google_nav_bar: ^5.0.6
+    line_icons: ^2.0.3
 
 
 dev_dependencies:

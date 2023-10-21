@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gesture_memorize/Components/Text/big_text.dart';
+import 'package:gesture_memorize/Constants/app_color.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Components/alert.dart';
 import 'package:gesture_memorize/global.dart';
 
@@ -17,6 +22,8 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   TextEditingController textFieldController = TextEditingController();
   List<Map<String, dynamic>> filteredGestures = [];
+  int _selectedIndex = 0;
+
   processGestures() {
     filteredGestures = [];
     for (int i = 0; i < currentGestures.gestures.length; i++) {
@@ -44,7 +51,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         context: context,
         builder: ((context) {
           return AlertDialog(
-            title: const Text('TextField in Dialog'),
+            title: const BigText(text: 'Name your actions', size: 22),
             content: TextField(
               onChanged: (value) {
                 setState(() {
@@ -52,15 +59,15 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 });
               },
               controller: textFieldController,
-              decoration:
-                  const InputDecoration(hintText: "Text Field in Dialog"),
+              decoration: const InputDecoration(hintText: ""),
             ),
             actions: [
               TextButton(
                 onPressed: () {
+                  currentGestures.gestures.removeLast();
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel'),
+                child: SizedBox(width:30, height: 30, child: Image.asset("assets/images/cancel.png")),
               ),
               TextButton(
                 onPressed: () {
@@ -68,7 +75,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                       textFieldController.text;
                   Navigator.pop(context);
                 },
-                child: const Text('OK'),
+                child: SizedBox(width:30, height: 30, child: Image.asset("assets/images/ok.png")),
               ),
             ],
           );
@@ -80,7 +87,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     if (currentGestures.gestures.isEmpty) {
       showAlert(
         context: context,
-        title: 'Can' 't play actions',
+        title: "Can't play actions",
         desc: 'Record actions first',
         onPressed: () {
           Navigator.pop(context);
@@ -93,34 +100,45 @@ class _BottomNavigationState extends State<BottomNavigation> {
           context: context,
           builder: ((context) {
             return AlertDialog(
-              title: const Text('Action Lists'),
+              title: BigText(text: 'Action Lists'),
               content: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: Expanded(
-                  child: Column(
-                    children: [
-                      for (int index = 0;
-                          index < filteredGestures.length;
-                          index++)
-                        TextButton(
-                          child: Text(filteredGestures[index]["gesturesName"]),
-                          onPressed: () {
-                            actions = List.from(filteredGestures[index]['actions']);
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: double.maxFinite,
+                  child: Scrollbar(
+                    child: ListView.separated(
+                      itemBuilder: ((context, index) {
+                        return InkWell(
+                          onTap: () {
+                            actions =
+                                List.from(filteredGestures[index]['actions']);
                             playing = true;
                             Navigator.pop(context);
                             widget.reload();
                           },
-                        )
-                    ],
-                  ),
-                ),
-              ),
+                          child: ListTile(
+                            leading: Image.asset(
+                              'assets/images/action.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            title: SmallText(
+                                text: filteredGestures[index]["gesturesName"],
+                                size:20),
+                          ),
+                        );
+                      }),
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(height: 1);
+                      },
+                      itemCount: filteredGestures.length,
+                    ),
+                  )),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancel'),
+                  child: SmallText(text: 'Cancel', size: 15,),
                 ),
               ],
             );
@@ -136,52 +154,103 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    print("index");
+    print(_selectedIndex);
+    // return GNav(
+    //   rippleColor: Colors.grey[300]!,
+    //   hoverColor: Colors.grey[100]!,
+    //   gap: 8,
+    //   activeColor: Colors.black,
+    //   iconSize: 32,
+    //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    //   duration: Duration(milliseconds: 400),
+    //   tabBackgroundColor: Colors.grey[100]!,
+    //   color: Colors.black,
+    //   tabs: [
+    //     GButton(icon: LineIcons.video, text: 'record'),
+    //     GButton(icon: LineIcons.home, text: 'home'),
+    //     GButton(icon: LineIcons.playCircle, text: 'play'),
+    //   ],
+    //   selectedIndex: _selectedIndex,
+    //   onTabChange: (index) {
+    //     setState(() {
+    //       _selectedIndex = index;
+    //     });
+    //   },
+    // );
     return BottomAppBar(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          recording
-              ? IconButton(
-                  onPressed: onStopRecordingPressed,
-                  icon: const Icon(
-                    Icons.stop_circle,
-                    size: 50,
+      shape: CircularNotchedRectangle(),
+      notchMargin: 6.0,
+      color: Color.fromARGB(255, 255, 255, 255),
+      elevation: 9.0,
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        height: 50.0,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            recording
+                ? GestureDetector(
+                    onTap: () {
+                      onStopRecordingPressed();
+                    },
+                    child: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Image.asset('assets/images/stop-sign.png')),
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      onRecordPressed();
+                    },
+                    child: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Image.asset('assets/images/video-player.png')),
                   ),
-                )
-              : IconButton(
-                  onPressed: onRecordPressed,
-                  icon: const Icon(
-                    Icons.video_call_rounded,
-                    size: 50,
-                  ),
-                ),
-          const SizedBox(width: 50),
-          IconButton(
-            onPressed: () {
-              onReturnHomePressed(context);
-            },
-            icon: const Icon(
-              Icons.home,
-              size: 50,
+            const SizedBox(width: 50),
+            GestureDetector(
+              onTap: () {
+                onReturnHomePressed(context);
+              },
+              child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset('assets/images/home.png')),
             ),
-          ),
-          const SizedBox(width: 50),
-          playing && actions.isNotEmpty
-              ? IconButton(
-                  onPressed: onStopPressed,
-                  icon: const Icon(
-                    Icons.pause_circle,
-                    size: 50,
+            // IconButton(
+            //   onPressed: () {
+            //     onReturnHomePressed(context);
+            //   },
+            //   icon: const Icon(
+            //     Icons.home,
+            //     size: 50,
+            //     color: Color(0xff2d386b),
+            //   ),
+            // ),
+            const SizedBox(width: 50),
+            playing && actions.isNotEmpty
+                ? GestureDetector(
+                    onTap: () {
+                      onStopPressed();
+                    },
+                    child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Image.asset('assets/images/stop.png')),
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      onPlayPressed();
+                    },
+                    child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Image.asset('assets/images/play.png')),
                   ),
-                )
-              : IconButton(
-                  onPressed: onPlayPressed,
-                  icon: const Icon(
-                    Icons.play_circle,
-                    size: 50,
-                  ),
-                )
-        ],
+          ],
+        ),
       ),
     );
   }

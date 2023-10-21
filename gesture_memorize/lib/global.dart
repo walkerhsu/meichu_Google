@@ -11,7 +11,7 @@ String lastclaimtime =
     DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString();
 
 int count = 0;
-int rewardInval = 90;
+int rewardInval = 11;
 
 onReturnHomePressed(context) {
   if (recording) {

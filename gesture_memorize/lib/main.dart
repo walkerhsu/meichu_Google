@@ -35,6 +35,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        // bottomAppBarTheme:BottomAppBarTheme(
+        //   color: Colors.white,
+        // ),
       ),
       initialRoute: HomePage.routeName,
       routes: {
