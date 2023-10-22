@@ -20,6 +20,7 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   reload() {
+    if (!mounted) return;
     setState(() {});
   }
 

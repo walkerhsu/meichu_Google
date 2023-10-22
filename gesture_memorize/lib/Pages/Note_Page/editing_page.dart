@@ -18,15 +18,17 @@ class EditingPage extends StatefulWidget {
 
 class _EditingPageState extends State<EditingPage> {
   String date = DateTime.now().toString();
-  final time = DateTime.now().month.toString() +
-      "/" +
-      DateTime.now().day.toString() +
-      "/" +
-      DateTime.now().year.toString() +
-      " at " +
-      DateTime.now().hour.toString() +
-      ":" +
-      DateTime.now().minute.toString();
+  // final time = DateTime.now().month.toString() +
+  //     "/" +
+  //     DateTime.now().day.toString() +
+  //     "/" +
+  //     DateTime.now().year.toString() +
+  //     " at " +
+  //     DateTime.now().hour.toString() +
+  //     ":" +
+  //     DateTime.now().minute.toString();
+
+  late final String time;
   final TextEditingController _titlecontroller =
       TextEditingController(text: "");
   final TextEditingController _contentcontroller =
@@ -35,6 +37,12 @@ class _EditingPageState extends State<EditingPage> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    time = DateFormat("MMM dd, yy hh:mm").format(DateTime.parse(date));
   }
 
   Timer? timer;
@@ -242,8 +250,6 @@ class _EditingPageState extends State<EditingPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Text(
-                        'Created At: ${DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.parse(date))}'),
                     SizedBox(width: screenWidth / 30),
                     SizedBox(
                       width: screenWidth * 0.8,

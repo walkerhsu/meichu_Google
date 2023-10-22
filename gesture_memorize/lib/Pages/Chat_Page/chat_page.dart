@@ -66,6 +66,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
 
     saveData().then((_) {
       _messagecontroller.clear();
+      _typeMessage = "";
       reload();
     });
   }
@@ -125,8 +126,8 @@ class _ChatboxPageState extends State<ChatboxPage> {
       //   _typeMessage = actions[0]["message"] ?? "";
       //   _messagecontroller.text = _typeMessage;
       // }
-    t?.cancel();
-        t = Timer(Duration(milliseconds: actions[0]["time"]), () {
+      t?.cancel();
+      t = Timer(Duration(milliseconds: actions[0]["time"]), () {
         if (!playing || actions.isEmpty) {
           playing = false;
           actions = [];
@@ -283,6 +284,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                             child: IconButton(
                               icon: const Icon(Icons.send),
                               onPressed: () async {
+                                if (_typeMessage.isEmpty) return;
                                 await onSendMessagePressed();
                               },
                               color: Colors.white54,
