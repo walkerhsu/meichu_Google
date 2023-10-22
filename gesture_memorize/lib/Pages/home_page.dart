@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: Text(
                 DateFormat("hh:mm").format(_time),
-                style: TextStyle(color: Colors.grey[200], fontSize: 70),
+                style: TextStyle(color: Colors.grey[200], fontSize: 75),
               ),
             ),
             Center(
