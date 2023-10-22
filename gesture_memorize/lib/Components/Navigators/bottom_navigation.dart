@@ -311,7 +311,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     child: SizedBox(
                         width: 60,
                         height: 60,
-                        child: Image.asset('assets/images/play.png')),
+                        child: Image.asset(
+                          'assets/images/play.png',
+                          color: Colors.grey[200],
+                        )),
                   ),
           ],
         ),

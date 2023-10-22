@@ -201,8 +201,11 @@ class _EditingPageState extends State<EditingPage> {
           ),
         ),
       ),
-      bottomNavigationBar:
-          BottomNavigation(reload: reload, root: "editingPage"),
+      bottomNavigationBar: BottomNavigation(
+        reload: reload,
+        root: "editingPage",
+        bgcolor: const Color.fromARGB(255, 228, 215, 194),
+      ),
     );
   }
 }
