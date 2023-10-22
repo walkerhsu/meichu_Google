@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
+import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
@@ -15,16 +18,36 @@ class EditingPage extends StatefulWidget {
 
 class _EditingPageState extends State<EditingPage> {
   String date = DateTime.now().toString();
+  // final time = DateTime.now().month.toString() +
+  //     "/" +
+  //     DateTime.now().day.toString() +
+  //     "/" +
+  //     DateTime.now().year.toString() +
+  //     " at " +
+  //     DateTime.now().hour.toString() +
+  //     ":" +
+  //     DateTime.now().minute.toString();
+
+  late final String time;
   final TextEditingController _titlecontroller =
       TextEditingController(text: "");
   final TextEditingController _contentcontroller =
       TextEditingController(text: "");
   reload() {
-    if(mounted)
-    {setState(() {});}
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  onArrowBackPressed(String title, String docs) async {
+  @override
+  void initState() {
+    super.initState();
+    time = DateFormat("MMM dd, yy hh:mm").format(DateTime.parse(date));
+  }
+
+  Timer? timer;
+
+  onArrowBackPressed(String title, String docs, String time) async {
     if (recording) {
       num difference = calculateTimeDifference();
       if (difference >= 10000) difference = 10000;
@@ -33,45 +56,49 @@ class _EditingPageState extends State<EditingPage> {
         "time": difference,
         "title": title,
         "docs": docs,
+        "createTime": time,
       });
       actions.add({
         "name": "ArrowBack",
         "time": difference,
         "title": title,
         "docs": docs,
+        "createTime": time,
       });
     } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
-    await saveData(title, docs);
+    await saveData(title, docs, time);
     if (!mounted) return;
+    print(actions);
+    timer?.cancel();
     Navigator.pop(context);
   }
 
-  onTitleEdittingCompleted() {
-    if (recording) {
-      num difference = calculateTimeDifference();
-      if (difference >= 2000) difference = 2000;
-      currentGestures.gestures.last["actions"].add({
-        "name": "TitleEdittingCompleted",
-        "time": difference,
-        "title": _titlecontroller.text,
-        "content": _contentcontroller.text,
-      });
-      actions.add({
-        "name": "TitleEdittingCompleted",
-        "time": difference,
-        "title": _titlecontroller.text,
-        "content": _contentcontroller.text,
-      });
-    } else if (playing && actions.isNotEmpty) {
-      // print(actions[0]["title"]);
-      _titlecontroller.text = actions[0]["title"] ?? "";
-      _contentcontroller.text = actions[0]["content"] ?? "";
-      actions.removeAt(0);
-      reload();
-    }
-  }
+  // onTitleEdittingCompleted() {
+  //   if (recording) {
+  //     num difference = calculateTimeDifference();
+  //     if (difference >= 2000) difference = 2000;
+  //     currentGestures.gestures.last["actions"].add({
+  //       "name": "TitleEdittingCompleted",
+  //       "time": difference,
+  //       "title": _titlecontroller.text,
+  //       "content": _contentcontroller.text,
+  //     });
+  //     actions.add({
+  //       "name": "TitleEdittingCompleted",
+  //       "time": difference,
+  //       "title": _titlecontroller.text,
+  //       "content": _contentcontroller.text,
+  //     });
+  //   } else if (playing && actions.isNotEmpty) {
+  //     // print(actions[0]["title"]);
+  //     _titlecontroller.text = actions[0]["title"] ?? "";
+  //     _contentcontroller.text = actions[0]["content"] ?? "";
+  //     actions.removeAt(0);
+  //     reload();
+  //   }
+  // }
 
   onContentEdittingCompleted() {
     if (recording) {
@@ -80,39 +107,51 @@ class _EditingPageState extends State<EditingPage> {
       currentGestures.gestures.last["actions"].add({
         "name": "ContentEdittingCompleted",
         "time": difference,
-        "title": _titlecontroller.text,
+        "title": _contentcontroller.text,
         "content": _contentcontroller.text,
       });
       actions.add({
         "name": "ContentEdittingCompleted",
         "time": difference,
-        "title": _titlecontroller.text,
+        "title": _contentcontroller.text,
         "content": _contentcontroller.text,
       });
     } else if (playing && actions.isNotEmpty) {
-      _titlecontroller.text = actions[0]["title"] ?? "";
+      print(actions[0]["content"]);
       _contentcontroller.text = actions[0]["content"] ?? "";
       actions.removeAt(0);
       reload();
     }
   }
 
-  Future<int> saveData(String title, String docs) async {
+  Future<int> saveData(String title, String docs, String time) async {
     await NoteCardInfo.addData({
-      "title": title,
+      "title": docs,
       "docs": docs,
       "date": date,
+      "time": time,
     });
     return 1;
   }
 
   @override
+  void dispose() {
+    _titlecontroller.dispose();
+    _contentcontroller.dispose();
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
     } else if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
+      timer?.cancel();
+      timer = Timer(Duration(milliseconds: actions[0]["time"]), () {
         if (!playing || actions.isEmpty) {
           playing = false;
           actions = [];
@@ -121,9 +160,9 @@ class _EditingPageState extends State<EditingPage> {
           onReturnHomePressed(context);
         } else if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed(
-              actions[0]["title"] ?? "", actions[0]["docs"] ?? "");
-        } else if (actions[0]["name"] == "TitleEdittingCompleted") {
-          onTitleEdittingCompleted();
+              actions[0]["title"] ?? _contentcontroller.text ?? "",
+              actions[0]["docs"] ?? _contentcontroller.text ?? "",
+              actions[0]["createTime"] ?? "");
         } else if (actions[0]["name"] == "ContentEdittingCompleted") {
           onContentEdittingCompleted();
         }
@@ -138,62 +177,113 @@ class _EditingPageState extends State<EditingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                    iconSize: 20,
-                    icon: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Colors.white,
+              SizedBox(
+                width: screenWidth,
+                child: Row(
+                  children: [
+                    IconButton(
+                      iconSize: 20,
+                      icon: const Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: AppColor.chocolate,
+                      ),
+                      onPressed: () {
+                        onArrowBackPressed(_titlecontroller.text,
+                            _contentcontroller.text, time);
+                        // Navigator.pop(context);
+                      },
                     ),
-                    onPressed: () async {
-                      await onArrowBackPressed(
-                          _titlecontroller.text, _contentcontroller.text);
-                    },
-                  ),
-                  const Icon(Icons.new_releases_rounded, color: Colors.white),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 30,
-                  ),
-                  const BigText(
-                      text: 'N E W  N O T E S',
-                      fontColor: Colors.white,
-                      size: 20.0),
-                ],
-              ),
-              TextField(
-                controller: _titlecontroller,
-                decoration: const InputDecoration(
-                  hintText: 'Note Title',
+                    Flexible(
+                      child: Row(
+                        children: [
+                          const BigText(
+                              text: 'N E W  N O T E S',
+                              fontColor: AppColor.chocolate,
+                              size: 20.0),
+                          const Spacer(),
+                          SmallText(
+                            text: time,
+                            fontColor: Colors.black,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // const Icon(Icons.new_releases_rounded, color: Colors.white),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 30,
+                    ),
+                  ],
                 ),
-                onSubmitted: onTitleEdittingCompleted(),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              Text(
-                  'Created At: ${DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.parse(date))}'),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 30,
-              ),
-              TextField(
-                controller: _contentcontroller,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration.collapsed(
-                  hintText: 'Note Description',
+
+              // SafeArea(
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(18.0),
+              //     child: TextField(
+              //       controller: _titlecontroller,
+              //       decoration: const InputDecoration.collapsed(
+              //         hintText: 'Note Title',
+              //       ),
+              //       onSubmitted: onTitleEdittingCompleted(),
+              //     ),
+              //   ),
+              // ),
+
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height / 30,
+              // ),
+
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height / 50,
+              // ),
+
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height / 30,
+              // ),
+              // TextField(
+              //   controller: _contentcontroller,
+              //   keyboardType: TextInputType.multiline,
+              //   maxLines: null,
+              //   decoration: const InputDecoration.collapsed(
+              //     hintText: 'Note Description',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    SizedBox(width: screenWidth / 30),
+                    SizedBox(
+                      width: screenWidth * 0.8,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width / 30),
+                        child: TextField(
+                          controller: _contentcontroller,
+                          onSubmitted: onContentEdittingCompleted(),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: const InputDecoration.collapsed(
+                            hintText: 'write something here...',
+                          ),
+                          style: const TextStyle(
+                            fontFamily: "Quicksand",
+                            fontSize: 17.5,
+                            color: AppColor.chocolate,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                onSubmitted: onContentEdittingCompleted(),
               ),
+
               Expanded(child: Container()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      await onArrowBackPressed(
-                          _titlecontroller.text, _contentcontroller.text);
+                      await onArrowBackPressed(_contentcontroller.text,
+                          _contentcontroller.text, time);
                     },
                     child: const Text('Save'),
                   ),

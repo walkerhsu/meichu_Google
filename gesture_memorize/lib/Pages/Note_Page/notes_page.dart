@@ -20,6 +20,7 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   reload() {
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -90,7 +91,7 @@ class _NotesPageState extends State<NotesPage> {
     }
 
     return Scaffold(
-      backgroundColor: AppColor.secondaryColor,
+      backgroundColor: const Color.fromARGB(255, 251, 243, 224),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(10.0),
@@ -104,13 +105,13 @@ class _NotesPageState extends State<NotesPage> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.notes_rounded, color: Colors.white),
+                  const Icon(Icons.notes_rounded, color: Colors.black),
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 30,
                   ),
                   const BigText(
                       text: 'M Y  N O T E S',
-                      fontColor: Colors.white,
+                      fontColor: Color.fromARGB(255, 28, 35, 59),
                       size: 20.0),
                 ],
               ),
@@ -130,8 +131,6 @@ class _NotesPageState extends State<NotesPage> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          // childAspectRatio: 1.0,
-                          // crossAxisSpacing: 10.0,
                           mainAxisSpacing: 2.0,
                         ),
                         children: notes.map((note) {
@@ -139,6 +138,7 @@ class _NotesPageState extends State<NotesPage> {
                             title: note['title'],
                             description: note['docs'],
                             date: note['date'],
+                            time: note['time'],
                             reload: reload,
                           );
                         }).toList(),

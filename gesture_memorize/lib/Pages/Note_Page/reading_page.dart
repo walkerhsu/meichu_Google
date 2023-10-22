@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
@@ -25,7 +27,7 @@ class ReadingPage extends StatefulWidget {
 class _ReadingPageState extends State<ReadingPage> {
   final TextEditingController _titlecontroller = TextEditingController();
   final TextEditingController _contentcontroller = TextEditingController();
-
+  Timer? timer;
   reload() {
     setState(() {});
   }
@@ -35,6 +37,14 @@ class _ReadingPageState extends State<ReadingPage> {
     super.initState();
     _titlecontroller.text = widget.title;
     _contentcontroller.text = widget.contents;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titlecontroller.dispose();
+    _contentcontroller.dispose();
+    timer?.cancel();
   }
 
   onArrowBackPressed() {
@@ -55,6 +65,28 @@ class _ReadingPageState extends State<ReadingPage> {
     Navigator.pop(context);
   }
 
+  onNoteBookChanged(String text) async {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "NoteBookChanged",
+        "time": difference,
+        "title": text,
+        "content": text,
+      });
+      actions.add({
+        "name": "NoteBookChanged",
+        "time": difference,
+        "title": text,
+        "content": text,
+      });
+    } else if (playing && actions.isNotEmpty) {
+      actions.removeAt(0);
+    }
+    await NoteCardInfo.editData(widget.date, text, text);
+    reload();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -63,16 +95,19 @@ class _ReadingPageState extends State<ReadingPage> {
       playing = false;
       reload();
     } else if (playing && actions.isNotEmpty) {
-      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
+      timer?.cancel();
+      timer = Timer(Duration(milliseconds: actions[0]["time"]), () {
         if (!playing || actions.isEmpty) {
           playing = false;
           actions = [];
           widget.reload();
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        }
-        if (actions[0]["name"] == "ArrowBack") {
+        } else if (actions[0]["name"] == "ArrowBack") {
           onArrowBackPressed();
+        } else if (actions[0]["name"] == "NoteBookChanged") {
+          print(actions[0]["content"] ?? "");
+          onNoteBookChanged(actions[0]["content"] ?? "");
         }
         //NOTE - add any gestures here if needed
       });
@@ -103,15 +138,15 @@ class _ReadingPageState extends State<ReadingPage> {
                   ),
                   Flexible(
                     child: BigText(
-                        maxlines:1,
-                        text:
-                            (widget.contents == "") ? "Untitled" : widget.contents,
+                        maxlines: 1,
+                        text: (widget.contents == "")
+                            ? "Untitled"
+                            : widget.contents,
                         fontColor: AppColor.chocolate,
                         size: 20.0),
                   ),
-    
                   const Spacer(),
-                  SizedBox(width: screenWidth/10),
+                  SizedBox(width: screenWidth / 10),
                   IconButton(
                     iconSize: 25,
                     icon: const Icon(
@@ -125,7 +160,7 @@ class _ReadingPageState extends State<ReadingPage> {
                   ),
                 ]),
               ),
-              
+
               SizedBox(
                 height: MediaQuery.of(context).size.height / 50,
               ),
@@ -141,12 +176,8 @@ class _ReadingPageState extends State<ReadingPage> {
                             right: MediaQuery.of(context).size.width / 30),
                         child: TextField(
                           controller: _contentcontroller,
-                          onChanged: (value) async {
-                            await NoteCardInfo.editData(
-                                widget.date,
-                                _contentcontroller.text,
-                                _contentcontroller.text);
-                            reload();
+                          onChanged: (_) async {
+                            await onNoteBookChanged(_contentcontroller.text);
                           },
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
@@ -177,7 +208,10 @@ class _ReadingPageState extends State<ReadingPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     ),
-                    child: const SmallText(text:'Save', fontWeight: FontWeight.bold,),
+                    child: const SmallText(
+                      text: 'Save',
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -188,7 +222,10 @@ class _ReadingPageState extends State<ReadingPage> {
             ],
           ),
         )),
-        bottomNavigationBar:
-            BottomNavigation(reload: reload, root: "readingPage"));
+        bottomNavigationBar: BottomNavigation(
+          reload: reload,
+          root: "readingPage",
+          bgcolor: const Color.fromARGB(255, 228, 215, 194),
+        ));
   }
 }
