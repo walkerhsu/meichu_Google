@@ -4,6 +4,7 @@ import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Constants/app_color.dart';
 import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
+import 'package:intl/intl.dart';
 
 class EditingPage extends StatefulWidget {
   const EditingPage({super.key});
@@ -171,7 +172,8 @@ class _EditingPageState extends State<EditingPage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 30,
               ),
-              Text(date),
+              Text(
+                  'Created At: ${DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.parse(date))}'),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 30,
               ),

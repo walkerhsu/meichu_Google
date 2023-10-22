@@ -321,7 +321,10 @@ class _ClaimRewardState extends State<ClaimReward> {
       actions: <Widget>[
         TextButton(
           onPressed: onClaimRewardOK,
-          child: const Text('OK'),
+          child: SizedBox(
+              width: 30,
+              height: 30,
+              child: Image.asset("assets/images/ok.png")),
         ),
       ],
     );
