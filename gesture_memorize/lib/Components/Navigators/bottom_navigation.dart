@@ -54,8 +54,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
             title: const BigText(text: 'Name your actions', size: 22),
             content: TextField(
               onChanged: (value) {
-                print(value.isEmpty);
-                print(errorText);
+                // print(value.isEmpty);
+                // print(errorText);
                 if (value.isEmpty) {
                   setState(() {
                     errorText = "Name can't be empty";
@@ -302,7 +302,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     child: SizedBox(
                         width: 60,
                         height: 60,
-                        child: Image.asset('assets/images/stop.png')),
+                        child: Image.asset(
+                          'assets/images/stop.png',
+                          color: Colors.grey[200],
+                        )),
                   )
                 : GestureDetector(
                     onTap: () {
