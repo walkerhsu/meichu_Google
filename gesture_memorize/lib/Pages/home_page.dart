@@ -153,28 +153,58 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       onNotesPagePressed();
                     },
-                    child: Image.asset(
-                      'assets/images/notebook.png',
-                      width: 85,
-                      height: 85,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/notebook.png',
+                          width: 85,
+                          height: 85,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Notes",
+                          style:
+                              TextStyle(color: Colors.grey[200], fontSize: 16),
+                        )
+                      ],
                     )),
                 InkWell(
                     onTap: () {
                       onMessagesPagePressed();
                     },
-                    child: Image.asset(
-                      'assets/images/message.png',
-                      width: 85,
-                      height: 85,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/message.png',
+                          width: 85,
+                          height: 85,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Messages",
+                          style:
+                              TextStyle(color: Colors.grey[200], fontSize: 16),
+                        )
+                      ],
                     )),
                 InkWell(
                     onTap: () {
                       onGamePagePressed();
                     },
-                    child: Image.asset(
-                      'assets/images/game-console.png',
-                      width: 85,
-                      height: 85,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/game-console.png',
+                          width: 85,
+                          height: 85,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Games",
+                          style:
+                              TextStyle(color: Colors.grey[200], fontSize: 16),
+                        )
+                      ],
                     ))
               ],
             ),
