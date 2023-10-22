@@ -34,7 +34,7 @@ class _NotesPageState extends State<NotesPage> {
         "name": "ArrowBack",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     reload();
@@ -52,7 +52,7 @@ class _NotesPageState extends State<NotesPage> {
         "name": "AddNewNote",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.push(context,
@@ -104,17 +104,6 @@ class _NotesPageState extends State<NotesPage> {
             children: [
               Row(
                 children: [
-                  IconButton(
-                    iconSize: 20,
-                    icon: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      onArrowBackPressed();
-                      // Navigator.pop(context);
-                    },
-                  ),
                   const Icon(Icons.notes_rounded, color: Colors.white),
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 30,
@@ -166,8 +155,8 @@ class _NotesPageState extends State<NotesPage> {
           // Navigator.push(context,
           //     MaterialPageRoute(builder: ((context) => EditingPage())));
         },
-        child: const Icon(Icons.edit),
         backgroundColor: AppColor.almond,
+        child: const Icon(Icons.edit),
       ),
       bottomNavigationBar: BottomNavigation(reload: reload, root: "NotesPage"),
     );

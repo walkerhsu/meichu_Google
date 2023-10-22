@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
-import 'package:gesture_memorize/Constants/screen.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:gesture_memorize/global.dart';
 
@@ -64,7 +62,7 @@ class _GamePageState extends State<GamePage> {
         "name": "ArrowBack",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.pop(context);
@@ -72,7 +70,6 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     String lastclaimtime = args['lastClaimTime'];
@@ -81,6 +78,79 @@ class _GamePageState extends State<GamePage> {
     Function addCount = args['addCount'];
     Function rewardCount = args['rewardCount'];
     Function updateClaimTime = args['updateClaimTime'];
+
+    onTapDown() {
+      if (recording) {
+        num difference = calculateTimeDifference();
+        if (difference <= 1000) difference = 1000;
+        currentGestures.gestures.last["actions"].add({
+          "name": "onTapDown",
+          "time": difference,
+        });
+        actions.add({
+          "name": "onTapDown",
+          "time": difference,
+        });
+      } else if (playing && actions.isNotEmpty) {
+        actions.removeAt(0);
+      }
+      setState(() {
+        _count += 1;
+        _isClicked = true;
+      });
+      addCount();
+    }
+
+    onTapUp() {
+      if (recording) {
+        num difference = calculateTimeDifference();
+        if (difference <= 1000) difference = 1000;
+        currentGestures.gestures.last["actions"].add({
+          "name": "onTapUp",
+          "time": difference,
+        });
+        actions.add({
+          "name": "onTapUp",
+          "time": difference,
+        });
+      } else if (playing && actions.isNotEmpty) {
+        actions.removeAt(0);
+      }
+      setState(() {
+        _isClicked = false;
+      });
+    }
+
+    onClaimRewardPressed() {
+      if (recording) {
+        num difference = calculateTimeDifference();
+        currentGestures.gestures.last["actions"].add({
+          "name": "ClaimReward",
+          "time": difference,
+        });
+        actions.add({
+          "name": "ClaimReward",
+          "time": difference,
+        });
+      } else if (playing && actions.isNotEmpty) {
+        actions.removeAt(0);
+      }
+      updateClaimTime();
+      rewardCount();
+      setState(() {
+        _diff = 30;
+        _count += 50;
+        _localClaimRewardTime =
+            DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString();
+        isClaimed = true;
+      });
+      showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => ClaimReward(reload: reload));
+      reload();
+    }
+
+    if (!mounted) return Container();
     setState(() {
       if (!isClaimed) {
         _localClaimRewardTime = lastclaimtime;
@@ -99,18 +169,25 @@ class _GamePageState extends State<GamePage> {
       return _diff == 0 && _isSparkle ? const SizedBox(width: 0) : w;
     }
 
+    print(actions);
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
     } else if (playing && actions.isNotEmpty) {
       Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        if (actions[0]["name"] == "ReturnHome") {
+        if (actions.isEmpty || !playing) {
+          playing = false;
+          actions = [];
+        } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
+        } else if (actions[0]["name"] == "ClaimReward" && _diff == 0) {
+          onClaimRewardPressed();
+        } else if (actions[0]["name"] == "onTapUp") {
+          onTapUp();
+        } else if (actions[0]["name"] == "onTapDown") {
+          onTapDown();
         }
         //NOTE - add any gestures here if needed
-        if (actions[0]["name"] == "ArrowBack") {
-          onArrowBackPressed();
-        }
       });
     }
 
@@ -128,21 +205,8 @@ class _GamePageState extends State<GamePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      iconSize: 20,
-                      icon: const Icon(
-                        Icons.arrow_back_ios_rounded,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        onArrowBackPressed();
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    // Column(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
                     const BigText(
                       text: "Game Page",
                       size: 20,
@@ -157,21 +221,7 @@ class _GamePageState extends State<GamePage> {
                     _diff == 0
                         ? IconButton(
                             onPressed: () {
-                              updateClaimTime();
-                              rewardCount();
-                              setState(() {
-                                _diff = 30;
-                                _count += 50;
-                                _localClaimRewardTime =
-                                    DateFormat("yyyy-MM-dd HH:mm:ss")
-                                        .format(DateTime.now())
-                                        .toString();
-                                isClaimed = true;
-                              });
-                              showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      ClaimReward());
+                              onClaimRewardPressed();
                             },
                             icon: const Icon(Icons.crisis_alert))
                         : IconButton(
@@ -193,16 +243,10 @@ class _GamePageState extends State<GamePage> {
                             fit: BoxFit.cover,
                           ),
                     onTapDown: (TapDownDetails tap) {
-                      setState(() {
-                        _count += 1;
-                        _isClicked = true;
-                      });
-                      addCount();
+                      onTapDown();
                     },
                     onTapUp: (TapUpDetails tap) {
-                      setState(() {
-                        _isClicked = false;
-                      });
+                      onTapUp();
                     },
                   ),
                 ),
@@ -226,22 +270,54 @@ class _GamePageState extends State<GamePage> {
 }
 
 class ClaimReward extends StatefulWidget {
-  const ClaimReward({super.key});
+  const ClaimReward({super.key, required this.reload});
+  final dynamic reload;
   @override
   State<ClaimReward> createState() => _ClaimRewardState();
 }
 
 class _ClaimRewardState extends State<ClaimReward> {
+  onClaimRewardOK() {
+    if (recording) {
+      num difference = calculateTimeDifference();
+      currentGestures.gestures.last["actions"].add({
+        "name": "ClaimRewardOK",
+        "time": difference,
+      });
+      actions.add({
+        "name": "ClaimRewardOK",
+        "time": difference,
+      });
+    } else if (playing && actions.isNotEmpty) {
+      actions.removeAt(0);
+    }
+    Navigator.pop(context, 'OK');
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (playing && actions.isEmpty) {
+      playing = false;
+      actions = [];
+      widget.reload();
+    } else if (playing && actions.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
+        if (actions.isEmpty || !playing) {
+          playing = false;
+          actions = [];
+          widget.reload();
+        } else if (actions[0]["name"] == "ClaimRewardOK") {
+          onClaimRewardOK();
+        }
+        //NOTE - add any gestures here if needed
+      });
+    }
     return AlertDialog(
       title: const Text('Congrats!'),
       content: const Text('You have earned 50 counts.'),
       actions: <Widget>[
         TextButton(
-          onPressed: () {
-            Navigator.pop(context, 'OK');
-          },
+          onPressed: onClaimRewardOK,
           child: const Text('OK'),
         ),
       ],

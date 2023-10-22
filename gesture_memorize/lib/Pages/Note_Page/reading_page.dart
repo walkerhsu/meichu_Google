@@ -7,7 +7,7 @@ import 'package:gesture_memorize/global.dart';
 import 'package:gesture_memorize/Infomations/note_card_info.dart';
 
 class ReadingPage extends StatefulWidget {
-  ReadingPage(
+  const ReadingPage(
       {this.title = "Untitled",
       required this.contents,
       required this.date,
@@ -48,7 +48,7 @@ class _ReadingPageState extends State<ReadingPage> {
         "name": "ArrowBack",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
       // print(actions);
     }
@@ -57,7 +57,6 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
     if (playing && actions.isEmpty) {
@@ -175,11 +174,10 @@ class _ReadingPageState extends State<ReadingPage> {
                               _contentcontroller.text, _contentcontroller.text)
                           .then((value) => Navigator.pop(context));
                     },
-                    child: const SmallText(text:'Save', fontWeight: FontWeight.bold,),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                      
+                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     ),
+                    child: const SmallText(text:'Save', fontWeight: FontWeight.bold,),
                   ),
                 ],
               ),

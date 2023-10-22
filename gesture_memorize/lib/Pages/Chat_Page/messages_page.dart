@@ -15,29 +15,13 @@ class MessagesPage extends StatefulWidget {
 
 class _MessagesPageState extends State<MessagesPage> {
   reload() {
-    setState(() {});
-  }
-
-  onArrowBackPressed() {
-    if (recording) {
-      num difference = calculateTimeDifference();
-      currentGestures.gestures.last["actions"].add({
-        "name": "ArrowBack",
-        "time": difference,
-      });
-      actions.add({
-        "name": "ArrowBack",
-        "time": difference,
-      });
-    } else if (playing) {
-      actions.removeAt(0);
+    if (mounted) {
+      setState(() {});
     }
-    Navigator.pop(context);
   }
 
   onMessagePressed(Map<String, dynamic> person) {
     if (recording) {
-      print("in recording");
       num difference = calculateTimeDifference();
       currentGestures.gestures.last["actions"].add({
         "name": "Message",
@@ -49,28 +33,27 @@ class _MessagesPageState extends State<MessagesPage> {
         "time": difference,
         "person": person,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ChatboxPage(
-                  name: person["name"],
-                  image: person["image"],
-                ))).then((_) {
-      reload();
-    });
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return ChatboxPage(
+            name: person["name"],
+            image: person["image"],
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-
     final users = {...MessageListInfo.people, ...MessageListInfo.recentpeople};
-    // print(MediaQuery.of(context).size.height);
-    // print(MediaQuery.of(context).size.width);
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
@@ -82,8 +65,6 @@ class _MessagesPageState extends State<MessagesPage> {
           reload();
         } else if (actions[0]["name"] == "ReturnHome") {
           onReturnHomePressed(context);
-        } else if (actions[0]["name"] == "ArrowBack") {
-          onArrowBackPressed();
         } else if (actions[0]["name"] == "Message") {
           onMessagePressed(actions[0]["person"]);
         }
@@ -111,17 +92,6 @@ class _MessagesPageState extends State<MessagesPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  IconButton(
-                    iconSize: 20,
-                    icon: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      onArrowBackPressed();
-                      // Navigator.pop(context);
-                    },
-                  ),
                   const Text(
                     'Messages',
                     style: TextStyle(
@@ -227,77 +197,71 @@ class _MessagesPageState extends State<MessagesPage> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: screenHeight / 65, bottom: screenWidth / 50),
-                    child: Expanded(
-                      child: ListView(
-                        children: [
-                          for (int i = 0;
-                              i < MessageListInfo.people.length;
-                              i++)
-                            GestureDetector(
-                              onTap: () {
-                                onMessagePressed(MessageListInfo.people[i]);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: screenWidth / 13.85,
-                                    top: screenHeight / 35.7,
-                                    right: screenWidth / 36),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: Image.asset(
-                                              MessageListInfo.people[i]
-                                                  ["image"])
-                                          .image,
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth / 36,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: screenWidth / 3,
-                                              child: Text(
-                                                MessageListInfo.people[i]
-                                                    ["name"],
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: ('Quicksand'),
-                                                    fontSize: 17),
-                                              ),
-                                            ),
-                                            SizedBox(width: screenWidth / 6
-                                                // width: 100,
-                                                ),
-                                            Text(
-                                              MessageListInfo.people[i]["date"],
+                    child: ListView(
+                      children: [
+                        for (int i = 0; i < MessageListInfo.people.length; i++)
+                          GestureDetector(
+                            onTap: () {
+                              onMessagePressed(MessageListInfo.people[i]);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: screenWidth / 13.85,
+                                  top: screenHeight / 35.7,
+                                  right: screenWidth / 36),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: Image.asset(
+                                            MessageListInfo.people[i]["image"])
+                                        .image,
+                                  ),
+                                  SizedBox(
+                                    width: screenWidth / 36,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: screenWidth / 3,
+                                            child: Text(
+                                              MessageListInfo.people[i]["name"],
                                               style: const TextStyle(
-                                                  color: Colors.white70),
+                                                  color: Colors.white,
+                                                  fontFamily: ('Quicksand'),
+                                                  fontSize: 17),
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: screenHeight / 143.2,
-                                        ),
-                                        Text(
-                                          MessageListInfo.people[i]["gmail"],
-                                          style: const TextStyle(
-                                            color: Colors.white70,
                                           ),
+                                          SizedBox(width: screenWidth / 6
+                                              // width: 100,
+                                              ),
+                                          Text(
+                                            MessageListInfo.people[i]["date"],
+                                            style: const TextStyle(
+                                                color: Colors.white70),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: screenHeight / 143.2,
+                                      ),
+                                      Text(
+                                        MessageListInfo.people[i]["gmail"],
+                                        style: const TextStyle(
+                                          color: Colors.white70,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            )
-                        ],
-                      ),
+                            ),
+                          )
+                      ],
                     ),
                   ),
                 ),
