@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Navigators/bottom_navigation.dart';
 import 'package:gesture_memorize/global.dart';
@@ -12,6 +14,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DateTime _time = DateTime.now();
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(const Duration(milliseconds: 1000), (Timer timer) {
+      setState(() {
+        _time = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer.cancel();
+  }
+
   reload() {
     setState(() {});
   }
@@ -109,9 +130,24 @@ class _HomePageState extends State<HomePage> {
             'assets/images/background.png',
             fit: BoxFit.cover,
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Column(children: <Widget>[
+            const SizedBox(height: 100),
+            Center(
+              child: Text(
+                DateFormat("hh:mm").format(_time),
+                style: TextStyle(color: Colors.grey[200], fontSize: 70),
+              ),
+            ),
+            Center(
+              child: Text(
+                DateFormat("MMM dd, EEEEEEEEE").format(_time),
+                style: TextStyle(color: Colors.grey[200], fontSize: 15),
+              ),
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 InkWell(
                     onTap: () {
@@ -119,32 +155,31 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Image.asset(
                       'assets/images/notebook.png',
-                      width: 100,
-                      height: 100,
+                      width: 85,
+                      height: 85,
                     )),
-                const SizedBox(height: 100),
                 InkWell(
                     onTap: () {
                       onMessagesPagePressed();
                     },
                     child: Image.asset(
-                      'assets/images/instagram.png',
-                      width: 100,
-                      height: 100,
+                      'assets/images/message.png',
+                      width: 85,
+                      height: 85,
                     )),
-                const SizedBox(height: 100),
                 InkWell(
                     onTap: () {
                       onGamePagePressed();
                     },
                     child: Image.asset(
                       'assets/images/game-console.png',
-                      width: 100,
-                      height: 100,
+                      width: 85,
+                      height: 85,
                     ))
               ],
             ),
-          )
+            const SizedBox(height: 90),
+          ])
         ],
       ),
       bottomNavigationBar: BottomNavigation(reload: reload, root: "/homePage"),

@@ -84,7 +84,7 @@ class _MessagesPageState extends State<MessagesPage> {
     return Scaffold(
       backgroundColor: const Color(0xff1B202D),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
