@@ -208,6 +208,7 @@ class _GamePageState extends State<GamePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const SizedBox(width: 8),
                       const BigText(
                         text: "Game Page",
                         size: 20,
@@ -216,7 +217,7 @@ class _GamePageState extends State<GamePage> {
                       // ],
                       // ),
                       const SizedBox(width: 8),
-                      Spacer(),
+                      const Spacer(),
                       sparkling(Text(
                           '${_diff ~/ 60}:${_diff % 60 >= 10 ? "" : 0}${_diff % 60}')),
                       _diff == 0
