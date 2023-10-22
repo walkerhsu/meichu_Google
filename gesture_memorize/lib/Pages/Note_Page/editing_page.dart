@@ -19,12 +19,11 @@ class _EditingPageState extends State<EditingPage> {
   final TextEditingController _contentcontroller =
       TextEditingController(text: "");
   reload() {
-    setState(() {});
+    if(mounted)
+    {setState(() {});}
   }
 
   onArrowBackPressed(String title, String docs) async {
-    await saveData(title, docs);
-    if (!mounted) return;
     if (recording) {
       num difference = calculateTimeDifference();
       if (difference >= 10000) difference = 10000;
@@ -40,9 +39,11 @@ class _EditingPageState extends State<EditingPage> {
         "title": title,
         "docs": docs,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
+    await saveData(title, docs);
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
@@ -62,7 +63,7 @@ class _EditingPageState extends State<EditingPage> {
         "title": _titlecontroller.text,
         "content": _contentcontroller.text,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       // print(actions[0]["title"]);
       _titlecontroller.text = actions[0]["title"] ?? "";
       _contentcontroller.text = actions[0]["content"] ?? "";
@@ -87,7 +88,7 @@ class _EditingPageState extends State<EditingPage> {
         "title": _titlecontroller.text,
         "content": _contentcontroller.text,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       _titlecontroller.text = actions[0]["title"] ?? "";
       _contentcontroller.text = actions[0]["content"] ?? "";
       actions.removeAt(0);

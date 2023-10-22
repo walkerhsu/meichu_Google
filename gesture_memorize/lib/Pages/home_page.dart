@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
         "name": "NotesPage",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.of(context).pushNamed('/NotesPage');
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
         "name": "MessagesPage",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.of(context).pushNamed('/MessagesPage');
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
         "name": "GamePage",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.of(context).pushNamed('/GamePage', arguments: {

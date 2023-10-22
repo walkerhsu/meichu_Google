@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Infomations/chat_info.dart';
@@ -23,6 +25,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
   final TextEditingController _messagecontroller =
       TextEditingController(text: "");
   String _typeMessage = "";
+  Timer? t;
 
   Future<List<dynamic>> filteredReadData() async {
     List<Map<String, dynamic>> data = await ChatInfo.readData("chat.json");
@@ -30,7 +33,8 @@ class _ChatboxPageState extends State<ChatboxPage> {
     // final receivedChats = [];
 
     data.forEach((chat) {
-      if (chat["receiver"] == widget.name && chat["sender"] == "me" ||(chat["receiver"] == "me") ){
+      if (chat["receiver"] == widget.name && chat["sender"] == "me" ||
+          (chat["receiver"] == "me")) {
         filteredChats.add(chat);
       }
     });
@@ -42,10 +46,9 @@ class _ChatboxPageState extends State<ChatboxPage> {
   }
 
   onSendMessagePressed() async {
-    print("onSendMessagePressed");
     if (recording) {
       num difference = calculateTimeDifference();
-      if(difference > 2000) difference = 2000;
+      if (difference > 2000) difference = 2000;
       currentGestures.gestures.last["actions"].add({
         "name": "MessageSent",
         "time": difference,
@@ -56,7 +59,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
         "time": difference,
         "message": _typeMessage,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       _typeMessage = actions[0]["message"] ?? "";
       actions.removeAt(0);
     }
@@ -68,8 +71,6 @@ class _ChatboxPageState extends State<ChatboxPage> {
   }
 
   Future<int> saveData() async {
-    print("_typeMessage");
-    print(_typeMessage);
     await ChatInfo.addData({
       "sender": "me",
       "receiver": widget.name,
@@ -79,13 +80,14 @@ class _ChatboxPageState extends State<ChatboxPage> {
   }
 
   reload() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   onArrowBackPressed() {
     if (recording) {
       num difference = calculateTimeDifference();
-      if (difference <= 500) difference = 500;
       currentGestures.gestures.last["actions"].add({
         "name": "ArrowBack",
         "time": difference,
@@ -94,10 +96,18 @@ class _ChatboxPageState extends State<ChatboxPage> {
         "name": "ArrowBack",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
-    Navigator.pop(context);
+    Navigator.popUntil(context, ModalRoute.withName('/MessagesPage'));
+    t?.cancel();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _messagecontroller.dispose();
+    t?.cancel();
   }
 
   @override
@@ -106,17 +116,17 @@ class _ChatboxPageState extends State<ChatboxPage> {
     String image = widget.image;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    print(actions);
+
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
     } else if (playing && actions.isNotEmpty) {
-      if(actions[0]["name"] == "MessageSent") {
-        _typeMessage = actions[0]["message"] ?? "";
-        _messagecontroller.text = _typeMessage;
-      }
-      Future.delayed(Duration(milliseconds: actions[0]["time"]), () {
-        // print(actions?[0]["name"]);
+      // if (actions[0]["name"] == "MessageSent") {
+      //   _typeMessage = actions[0]["message"] ?? "";
+      //   _messagecontroller.text = _typeMessage;
+      // }
+    t?.cancel();
+        t = Timer(Duration(milliseconds: actions[0]["time"]), () {
         if (!playing || actions.isEmpty) {
           playing = false;
           actions = [];
@@ -129,6 +139,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
         //NOTE - add any gestures here if needed
       });
     }
+
     return Scaffold(
       backgroundColor: const Color(0xff1B202D),
       body: SafeArea(
@@ -199,7 +210,9 @@ class _ChatboxPageState extends State<ChatboxPage> {
                               children: snapshot.data!
                                   .map((chat) => Padding(
                                         padding: EdgeInsets.only(
-                                            right: (chat["receiver"] == "me")?(screenWidth * 0.5):(screenWidth / 50),
+                                            right: (chat["receiver"] == "me")
+                                                ? (screenWidth * 0.5)
+                                                : (screenWidth / 50),
                                             bottom: screenHeight / 71.4),
                                         child: Container(
                                             decoration: BoxDecoration(
@@ -207,7 +220,8 @@ class _ChatboxPageState extends State<ChatboxPage> {
                                                     BorderRadius.circular(20),
                                                 color: const Color(0xff373E4E)),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(10.0),
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
                                               child: SmallText(
                                                 text: chat["content"],
                                                 fontColor: Colors.white,
@@ -221,7 +235,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                         ),
                       );
                     }),
-                
+
                 // const Spacer(),
                 Container(
                   padding: EdgeInsets.only(bottom: screenWidth / 45),
@@ -249,7 +263,7 @@ class _ChatboxPageState extends State<ChatboxPage> {
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               autofocus: true,
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               textAlignVertical: TextAlignVertical.center,
                               decoration: const InputDecoration.collapsed(
                                 filled: true,

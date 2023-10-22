@@ -15,7 +15,9 @@ class MessagesPage extends StatefulWidget {
 
 class _MessagesPageState extends State<MessagesPage> {
   reload() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   onMessagePressed(Map<String, dynamic> person) {
@@ -31,25 +33,26 @@ class _MessagesPageState extends State<MessagesPage> {
         "time": difference,
         "person": person,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ChatboxPage(
-                  name: person["name"],
-                  image: person["image"],
-                ))).then((_) {
-      reload();
-    });
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return ChatboxPage(
+            name: person["name"],
+            image: person["image"],
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-
     final users = {...MessageListInfo.people, ...MessageListInfo.recentpeople};
     if (playing && actions.isEmpty) {
       playing = false;
@@ -194,77 +197,71 @@ class _MessagesPageState extends State<MessagesPage> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: screenHeight / 65, bottom: screenWidth / 50),
-                    child: Expanded(
-                      child: ListView(
-                        children: [
-                          for (int i = 0;
-                              i < MessageListInfo.people.length;
-                              i++)
-                            GestureDetector(
-                              onTap: () {
-                                onMessagePressed(MessageListInfo.people[i]);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: screenWidth / 13.85,
-                                    top: screenHeight / 35.7,
-                                    right: screenWidth / 36),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: Image.asset(
-                                              MessageListInfo.people[i]
-                                                  ["image"])
-                                          .image,
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth / 36,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: screenWidth / 3,
-                                              child: Text(
-                                                MessageListInfo.people[i]
-                                                    ["name"],
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: ('Quicksand'),
-                                                    fontSize: 17),
-                                              ),
-                                            ),
-                                            SizedBox(width: screenWidth / 6
-                                                // width: 100,
-                                                ),
-                                            Text(
-                                              MessageListInfo.people[i]["date"],
+                    child: ListView(
+                      children: [
+                        for (int i = 0; i < MessageListInfo.people.length; i++)
+                          GestureDetector(
+                            onTap: () {
+                              onMessagePressed(MessageListInfo.people[i]);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: screenWidth / 13.85,
+                                  top: screenHeight / 35.7,
+                                  right: screenWidth / 36),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: Image.asset(
+                                            MessageListInfo.people[i]["image"])
+                                        .image,
+                                  ),
+                                  SizedBox(
+                                    width: screenWidth / 36,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: screenWidth / 3,
+                                            child: Text(
+                                              MessageListInfo.people[i]["name"],
                                               style: const TextStyle(
-                                                  color: Colors.white70),
+                                                  color: Colors.white,
+                                                  fontFamily: ('Quicksand'),
+                                                  fontSize: 17),
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: screenHeight / 143.2,
-                                        ),
-                                        Text(
-                                          MessageListInfo.people[i]["gmail"],
-                                          style: const TextStyle(
-                                            color: Colors.white70,
                                           ),
+                                          SizedBox(width: screenWidth / 6
+                                              // width: 100,
+                                              ),
+                                          Text(
+                                            MessageListInfo.people[i]["date"],
+                                            style: const TextStyle(
+                                                color: Colors.white70),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: screenHeight / 143.2,
+                                      ),
+                                      Text(
+                                        MessageListInfo.people[i]["gmail"],
+                                        style: const TextStyle(
+                                          color: Colors.white70,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            )
-                        ],
-                      ),
+                            ),
+                          )
+                      ],
                     ),
                   ),
                 ),

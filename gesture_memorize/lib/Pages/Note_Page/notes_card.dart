@@ -37,7 +37,7 @@ class _NotesCardState extends State<NotesCard> {
         "title": widget.title,
         "contents": widget.description,
       });
-    } else if (playing) {
+    } else if (playing  && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.of(context)

@@ -62,7 +62,7 @@ class _GamePageState extends State<GamePage> {
         "name": "ArrowBack",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.pop(context);
@@ -91,7 +91,7 @@ class _GamePageState extends State<GamePage> {
           "name": "onTapDown",
           "time": difference,
         });
-      } else if (playing) {
+      } else if (playing && actions.isNotEmpty) {
         actions.removeAt(0);
       }
       setState(() {
@@ -113,7 +113,7 @@ class _GamePageState extends State<GamePage> {
           "name": "onTapUp",
           "time": difference,
         });
-      } else if (playing) {
+      } else if (playing && actions.isNotEmpty) {
         actions.removeAt(0);
       }
       setState(() {
@@ -132,7 +132,7 @@ class _GamePageState extends State<GamePage> {
           "name": "ClaimReward",
           "time": difference,
         });
-      } else if (playing) {
+      } else if (playing && actions.isNotEmpty) {
         actions.removeAt(0);
       }
       updateClaimTime();
@@ -288,7 +288,7 @@ class _ClaimRewardState extends State<ClaimReward> {
         "name": "ClaimRewardOK",
         "time": difference,
       });
-    } else if (playing) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.pop(context, 'OK');

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gesture_memorize/Components/Text/big_text.dart';
-import 'package:gesture_memorize/Constants/app_color.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:gesture_memorize/Components/Text/small_text.dart';
 import 'package:gesture_memorize/Components/alert.dart';
 import 'package:gesture_memorize/global.dart';
@@ -22,7 +19,7 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   TextEditingController textFieldController = TextEditingController();
   List<Map<String, dynamic>> filteredGestures = [];
-  int _selectedIndex = 0;
+  String errorText = "";
 
   processGestures() {
     filteredGestures = [];
@@ -48,18 +45,37 @@ class _BottomNavigationState extends State<BottomNavigation> {
   onStopRecordingPressed() {
     recording = false;
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: ((context) {
           return AlertDialog(
             title: const BigText(text: 'Name your actions', size: 22),
             content: TextField(
               onChanged: (value) {
-                setState(() {
-                  textFieldController.text = value;
-                });
+                print(value.isEmpty);
+                print(errorText);
+                if (value.isEmpty) {
+                  setState(() {
+                    errorText = "Name can't be empty";
+                    
+                  });
+                } else {
+                  setState(() {
+                    errorText = "";
+                  });
+                  setState(() {
+                    textFieldController.text = value;
+                  });
+                }
               },
               controller: textFieldController,
-              decoration: const InputDecoration(hintText: ""),
+              decoration: InputDecoration(
+                hintText: "your action name",
+                errorBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+                errorText: errorText == "" ? null : errorText,
+              ),
             ),
             actions: [
               TextButton(
@@ -67,15 +83,30 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   currentGestures.gestures.removeLast();
                   Navigator.pop(context);
                 },
-                child: SizedBox(width:30, height: 30, child: Image.asset("assets/images/cancel.png")),
+                child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Image.asset("assets/images/cancel.png")),
               ),
               TextButton(
                 onPressed: () {
-                  currentGestures.gestures.last["gesturesName"] =
-                      textFieldController.text;
-                  Navigator.pop(context);
+                  if (textFieldController.text == "") {
+                    setState(() {
+                      errorText = "Name can't be empty";
+                    });
+                  } else {
+                    setState(() {
+                      errorText = "";
+                    });
+                    currentGestures.gestures.last["gesturesName"] =
+                        textFieldController.text;
+                    Navigator.pop(context);
+                  }
                 },
-                child: SizedBox(width:30, height: 30, child: Image.asset("assets/images/ok.png")),
+                child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: Image.asset("assets/images/ok.png")),
               ),
             ],
           );
@@ -96,11 +127,22 @@ class _BottomNavigationState extends State<BottomNavigation> {
       return;
     } else {
       processGestures();
+      if (filteredGestures.isEmpty) {
+        showAlert(
+          context: context,
+          title: "No actions recorded at this page",
+          desc: 'Go to other pages to start the actions',
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ).show();
+        return;
+      }
       showDialog(
           context: context,
           builder: ((context) {
             return AlertDialog(
-              title: BigText(text: 'Action Lists'),
+              title: const BigText(text: 'Action Lists'),
               content: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.3,
                   width: double.maxFinite,
@@ -123,7 +165,27 @@ class _BottomNavigationState extends State<BottomNavigation> {
                             ),
                             title: SmallText(
                                 text: filteredGestures[index]["gesturesName"],
-                                size:20),
+                                size: 20),
+                            trailing: InkWell(
+                              onTap: () {
+                                for (int i = 0;
+                                    i < currentGestures.gestures.length;
+                                    i++) {
+                                  if (currentGestures.gestures[i]
+                                          ["gesturesName"] ==
+                                      filteredGestures[index]["gesturesName"]) {
+                                    currentGestures.gestures.removeAt(i);
+                                    break;
+                                  }
+                                }
+                                Navigator.pop(context);
+                                widget.reload();
+                              },
+                              child: Image.asset(
+                                  width: 30,
+                                  height: 30,
+                                  "assets/images/recycling-bin.png"),
+                            ),
                           ),
                         );
                       }),
@@ -138,7 +200,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: SmallText(text: 'Cancel', size: 15,),
+                  child: const SmallText(
+                    text: 'Cancel',
+                    size: 15,
+                  ),
                 ),
               ],
             );
@@ -154,8 +219,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    print("index");
-    print(_selectedIndex);
     // return GNav(
     //   rippleColor: Colors.grey[300]!,
     //   hoverColor: Colors.grey[100]!,

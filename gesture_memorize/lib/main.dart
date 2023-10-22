@@ -19,7 +19,6 @@ Future<void> main() async {
   initTime = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now());
   lastclaimtime =
       DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString();
-  int count = 0;
   runApp(const MyApp());
 }
 

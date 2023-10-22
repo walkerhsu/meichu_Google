@@ -24,7 +24,7 @@ onReturnHomePressed(context) {
       "name": "ReturnHome",
       "time": difference,
     });
-  } else if (playing) {
+  } else if (playing && actions.isNotEmpty) {
     actions.removeAt(0);
   } else {
     playing = false;
