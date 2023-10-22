@@ -270,8 +270,11 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
         ),
       ),
-      bottomNavigationBar:
-          BottomNavigation(reload: reload, root: "MessagesPage"),
+      bottomNavigationBar: BottomNavigation(
+        reload: reload,
+        root: "MessagesPage",
+        bgcolor: const Color.fromARGB(255, 24, 30, 40),
+      ),
     );
   }
 }

@@ -102,41 +102,50 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            InkWell(
-                onTap: () {
-                  onNotesPagePressed();
-                },
-                child: Image.asset(
-                  'assets/images/notebook.png',
-                  width: 100,
-                  height: 100,
-                )),
-            const SizedBox(height: 100),
-            InkWell(
-                onTap: () {
-                  onMessagesPagePressed();
-                },
-                child: Image.asset(
-                  'assets/images/instagram.png',
-                  width: 100,
-                  height: 100,
-                )),
-            const SizedBox(height: 100),
-            InkWell(
-                onTap: () {
-                  onGamePagePressed();
-                },
-                child: Image.asset(
-                  'assets/images/game-console.png',
-                  width: 100,
-                  height: 100,
-                ))
-          ],
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Image.asset(
+            'assets/images/background.png',
+            fit: BoxFit.cover,
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                InkWell(
+                    onTap: () {
+                      onNotesPagePressed();
+                    },
+                    child: Image.asset(
+                      'assets/images/notebook.png',
+                      width: 100,
+                      height: 100,
+                    )),
+                const SizedBox(height: 100),
+                InkWell(
+                    onTap: () {
+                      onMessagesPagePressed();
+                    },
+                    child: Image.asset(
+                      'assets/images/instagram.png',
+                      width: 100,
+                      height: 100,
+                    )),
+                const SizedBox(height: 100),
+                InkWell(
+                    onTap: () {
+                      onGamePagePressed();
+                    },
+                    child: Image.asset(
+                      'assets/images/game-console.png',
+                      width: 100,
+                      height: 100,
+                    ))
+              ],
+            ),
+          )
+        ],
       ),
       bottomNavigationBar: BottomNavigation(reload: reload, root: "/homePage"),
     );

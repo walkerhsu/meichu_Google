@@ -169,7 +169,7 @@ class _GamePageState extends State<GamePage> {
       return _diff == 0 && _isSparkle ? const SizedBox(width: 0) : w;
     }
 
-    print(actions);
+    // print(actions);
     if (playing && actions.isEmpty) {
       playing = false;
       reload();
@@ -195,7 +195,6 @@ class _GamePageState extends State<GamePage> {
       body: SafeArea(
           child: Stack(children: <Widget>[
         Container(
-          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             // color: Colors.white,
             borderRadius: BorderRadius.circular(10.0),
@@ -204,31 +203,35 @@ class _GamePageState extends State<GamePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const BigText(
-                      text: "Game Page",
-                      size: 20,
-                    ),
-                    // Text("Logged in at ${args['time']}")
-                    // ],
-                    // ),
-                    const SizedBox(width: 8),
-                    Spacer(),
-                    sparkling(Text(
-                        '${_diff ~/ 60}:${_diff % 60 >= 10 ? "" : 0}${_diff % 60}')),
-                    _diff == 0
-                        ? IconButton(
-                            onPressed: () {
-                              onClaimRewardPressed();
-                            },
-                            icon: const Icon(Icons.crisis_alert))
-                        : IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.calendar_month)),
-                    const SizedBox(width: 8)
-                  ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 8),
+                      const BigText(
+                        text: "Game Page",
+                        size: 20,
+                      ),
+                      // Text("Logged in at ${args['time']}")
+                      // ],
+                      // ),
+                      const SizedBox(width: 8),
+                      const Spacer(),
+                      sparkling(Text(
+                          '${_diff ~/ 60}:${_diff % 60 >= 10 ? "" : 0}${_diff % 60}')),
+                      _diff == 0
+                          ? IconButton(
+                              onPressed: () {
+                                onClaimRewardPressed();
+                              },
+                              icon: const Icon(Icons.crisis_alert))
+                          : IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.calendar_month)),
+                      const SizedBox(width: 8)
+                    ],
+                  ),
                 ),
                 // SizedBox(height: screenHeight / 3),
                 Expanded(
@@ -250,7 +253,7 @@ class _GamePageState extends State<GamePage> {
                     },
                   ),
                 ),
-                SizedBox(child: Text('$_isClicked'), width: 0, height: 0),
+                SizedBox(width: 0, height: 0, child: Text('$_isClicked')),
               ]),
         ),
         Column(
@@ -259,7 +262,8 @@ class _GamePageState extends State<GamePage> {
           children: <Widget>[
             const SizedBox(height: 60),
             Center(
-              child: Text("${count + _count}", style: TextStyle(fontSize: 80)),
+              child: Text("${count + _count}",
+                  style: const TextStyle(fontSize: 80)),
             )
           ],
         )
@@ -318,7 +322,10 @@ class _ClaimRewardState extends State<ClaimReward> {
       actions: <Widget>[
         TextButton(
           onPressed: onClaimRewardOK,
-          child: const Text('OK'),
+          child: SizedBox(
+              width: 30,
+              height: 30,
+              child: Image.asset("assets/images/ok.png")),
         ),
       ],
     );

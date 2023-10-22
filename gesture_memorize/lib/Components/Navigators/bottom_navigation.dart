@@ -7,10 +7,12 @@ import 'package:gesture_memorize/global.dart';
 class BottomNavigation extends StatefulWidget {
   final dynamic reload;
   final String root;
+  final Color bgcolor;
   const BottomNavigation({
     super.key,
     required this.reload,
     required this.root,
+    this.bgcolor = const Color.fromARGB(255, 10, 67, 111),
   });
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -57,7 +59,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 if (value.isEmpty) {
                   setState(() {
                     errorText = "Name can't be empty";
-                    
                   });
                 } else {
                   setState(() {
@@ -244,7 +245,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       notchMargin: 6.0,
-      color: Color.fromARGB(255, 255, 255, 255),
+      color: widget.bgcolor,
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
@@ -310,7 +311,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     child: SizedBox(
                         width: 60,
                         height: 60,
-                        child: Image.asset('assets/images/play.png')),
+                        child: Image.asset(
+                          'assets/images/play.png',
+                          color: Colors.grey[200],
+                        )),
                   ),
           ],
         ),

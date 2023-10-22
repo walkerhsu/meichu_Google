@@ -158,7 +158,11 @@ class _NotesPageState extends State<NotesPage> {
         backgroundColor: AppColor.almond,
         child: const Icon(Icons.edit),
       ),
-      bottomNavigationBar: BottomNavigation(reload: reload, root: "NotesPage"),
+      bottomNavigationBar: BottomNavigation(
+        reload: reload,
+        root: "NotesPage",
+        bgcolor: const Color.fromARGB(255, 215, 157, 106),
+      ),
     );
   }
 }
