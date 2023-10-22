@@ -210,7 +210,7 @@ class _GamePageState extends State<GamePage> {
                     children: [
                       const SizedBox(width: 8),
                       const BigText(
-                        text: "Game Page",
+                        text: "Tapping Game",
                         size: 20,
                       ),
                       // Text("Logged in at ${args['time']}")

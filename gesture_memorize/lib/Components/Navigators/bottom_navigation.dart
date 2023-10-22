@@ -252,36 +252,55 @@ class _BottomNavigationState extends State<BottomNavigation> {
         height: 50.0,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0)),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             recording
-                ? GestureDetector(
-                    onTap: () {
-                      onStopRecordingPressed();
-                    },
-                    child: SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Image.asset('assets/images/stop-sign.png')),
+                ? Row(
+                    children: <Widget>[
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          onStopRecordingPressed();
+                        },
+                        child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Image.asset('assets/images/stop-sign.png')),
+                      ),
+                      const SizedBox(width: 10),
+                    ],
                   )
-                : GestureDetector(
-                    onTap: () {
-                      onRecordPressed();
-                    },
-                    child: SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Image.asset('assets/images/video-player.png')),
+                : Row(
+                    children: <Widget>[
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          onRecordPressed();
+                        },
+                        child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child:
+                                Image.asset('assets/images/video-player.png')),
+                      ),
+                      const SizedBox(width: 10),
+                    ],
                   ),
-            const SizedBox(width: 50),
-            GestureDetector(
-              onTap: () {
-                onReturnHomePressed(context);
-              },
-              child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Image.asset('assets/images/home.png')),
+            // const SizedBox(width: 50),
+            Row(
+              children: <Widget>[
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    onReturnHomePressed(context);
+                  },
+                  child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Image.asset('assets/images/home.png')),
+                ),
+                const SizedBox(width: 10),
+              ],
             ),
             // IconButton(
             //   onPressed: () {
@@ -293,7 +312,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             //     color: Color(0xff2d386b),
             //   ),
             // ),
-            const SizedBox(width: 50),
+            // const SizedBox(width: 50),
             playing && actions.isNotEmpty
                 ? GestureDetector(
                     onTap: () {
