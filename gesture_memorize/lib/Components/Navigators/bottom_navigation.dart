@@ -183,8 +183,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                                 widget.reload();
                               },
                               child: Image.asset(
-                                  width: 30,
-                                  height: 30,
+                                  width: 50,
+                                  height: 50,
                                   "assets/images/recycling-bin.png"),
                             ),
                           ),

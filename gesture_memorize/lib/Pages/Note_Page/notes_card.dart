@@ -9,12 +9,14 @@ class NotesCard extends StatefulWidget {
     super.key,
     this.title = "T I T L E",
     this.description = "brief description",
-    this.date = "2021-10-10",
+    this.date = "2023-10-22",
+    this.time = "",
     required this.reload,
   });
   final String title;
   final String description;
   final String date;
+  final String time;
   final dynamic reload;
 
   @override
@@ -37,7 +39,7 @@ class _NotesCardState extends State<NotesCard> {
         "title": widget.title,
         "contents": widget.description,
       });
-    } else if (playing  && actions.isNotEmpty) {
+    } else if (playing && actions.isNotEmpty) {
       actions.removeAt(0);
     }
     Navigator.of(context)
@@ -116,7 +118,9 @@ class _NotesCardState extends State<NotesCard> {
                         maxlines: 3,
                       )),
                     ],
-                  )
+                  ),
+                  Spacer(),
+                  SmallText(text: widget.time)
                 ],
               ),
             ),
